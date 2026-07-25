@@ -1,0 +1,68 @@
+:root {
+    --navy: #1B2A4A;
+    --navy-deep: #101A30;
+    --navy-soft: #2C3F66;
+    --gold: #C89B4A;
+    --gold-soft: #E4C888;
+    --paper: #F7F3EA;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+}
+
+.hero-photo {
+    min-height: 320px;
+    border-radius: 1rem;
+    background-image: url('/assets/img/hero-sekolah.jpg'), linear-gradient(135deg, var(--navy-soft), var(--navy-deep));
+    background-size: cover, cover;
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+}
+
+@media (max-width: 991.98px) {
+    .hero-photo {
+        min-height: 220px;
+    }
+}
+
+.btn-gold {
+    background-color: var(--gold);
+    border-color: var(--gold);
+    color: #fff;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-soft);
+    border-color: var(--gold-soft);
+    color: var(--navy);
+}
+
+.btn-whatsapp {
+    background-color: #25D366;
+    border-color: #25D366;
+    color: #fff;
+}
+
+.btn-whatsapp:hover {
+    background-color: #1DA851;
+    border-color: #1DA851;
+    color: #fff;
+}
+
+.step-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.section-cta {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+}

@@ -191,7 +191,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================
 
 INSERT INTO sekolah (id, npsn, nama, jenjang, alamat, tahun_ajaran) VALUES
-    (1, '00000000', 'Nama Sekolah', 'SMA', 'Alamat sekolah', '2026/2027');
+    (1, '00000000', 'SMA Cendekia Nusantara', 'SMA', 'Jl. Pendidikan No. 45, Jakarta Selatan', '2026/2027');
 
 INSERT INTO gelombang (kode, label, tanggal_mulai, tanggal_selesai, kuota, biaya_ppdb, urutan, aktif) VALUES
     ('early_bird', 'Early Bird', '2026-01-01', '2026-02-28', 60, 500000, 1, 0),

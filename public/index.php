@@ -1,10 +1,23 @@
 <?php
 
+// Saat dijalankan lewat PHP built-in dev server (`php -S`), biarkan file yang
+// benar-benar ada (CSS/JS/gambar) disajikan apa adanya alih-alih diproses
+// lewat router. Tidak berpengaruh saat dijalankan lewat Apache/XAMPP.
+if (PHP_SAPI === 'cli-server') {
+    $path = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '');
+    $file = __DIR__ . $path;
+
+    if ($path !== '/' && is_file($file)) {
+        return false;
+    }
+}
+
 require dirname(__DIR__) . '/src/Core/Autoloader.php';
 require dirname(__DIR__) . '/src/Core/helpers.php';
 
 use App\Controllers\AdminController;
 use App\Controllers\AuthController;
+use App\Controllers\HomeController;
 use App\Controllers\PendaftaranController;
 use App\Controllers\StatusController;
 use App\Core\Autoloader;
@@ -13,6 +26,8 @@ use App\Core\Router;
 Autoloader::register();
 
 $router = new Router();
+
+$router->get('/', [HomeController::class, 'index']);
 
 $router->get('/pendaftaran', [PendaftaranController::class, 'form']);
 $router->post('/pendaftaran', [PendaftaranController::class, 'simpan']);
