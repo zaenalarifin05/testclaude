@@ -40,6 +40,10 @@ tabel kalau nilai ini perlu diubah dari UI, pilih env kalau cukup diubah manual 
 | tahun_ajaran | string | contoh: "2026/2027" |
 | updated_at | timestamp | |
 
+*Dipakai oleh:* `App\Models\Sekolah::ambil()`, ditampilkan di beranda (`HomeController`).
+Belum ada form edit lewat panel admin — perubahan nama/alamat/tahun ajaran saat ini masih
+manual lewat database.
+
 ## 2. Gelombang
 Periode pendaftaran (early bird, tahap 1, dst).
 
