@@ -11,11 +11,12 @@ class Auth
         }
     }
 
-    public static function login(int $adminId): void
+    public static function login(int $adminId, string $role): void
     {
         self::start();
         session_regenerate_id(true);
         $_SESSION['admin_id'] = $adminId;
+        $_SESSION['admin_role'] = $role;
     }
 
     public static function logout(): void
@@ -37,10 +38,33 @@ class Auth
         return self::id() !== null;
     }
 
+    public static function role(): ?string
+    {
+        self::start();
+
+        return $_SESSION['admin_role'] ?? null;
+    }
+
+    public static function isSuperadmin(): bool
+    {
+        return self::role() === 'superadmin';
+    }
+
     public static function requireLogin(): void
     {
         if (!self::check()) {
             header('Location: /admin/login');
+            exit;
+        }
+    }
+
+    public static function requireSuperadmin(): void
+    {
+        self::requireLogin();
+
+        if (!self::isSuperadmin()) {
+            http_response_code(403);
+            echo 'Hanya superadmin yang boleh mengakses halaman ini.';
             exit;
         }
     }

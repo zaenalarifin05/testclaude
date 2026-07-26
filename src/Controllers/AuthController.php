@@ -30,7 +30,7 @@ class AuthController
             return;
         }
 
-        Auth::login((int) $admin['id']);
+        Auth::login((int) $admin['id'], $admin['role']);
         header('Location: /admin');
         exit;
     }

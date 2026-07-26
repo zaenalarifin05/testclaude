@@ -16,6 +16,7 @@ require dirname(__DIR__) . '/src/Core/Autoloader.php';
 require dirname(__DIR__) . '/src/Core/helpers.php';
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminUserController;
 use App\Controllers\AuthController;
 use App\Controllers\HomeController;
 use App\Controllers\PendaftaranController;
@@ -48,5 +49,12 @@ $router->post('/admin/pendaftar/{id}/wawancara', [AdminController::class, 'jadwa
 $router->post('/admin/pendaftar/{id}/hasil', [AdminController::class, 'tetapkanHasil']);
 $router->post('/admin/pendaftar/{id}/pembayaran/lunas', [AdminController::class, 'konfirmasiLunas']);
 $router->get('/admin/pendaftar/{id}/dokumen/{jenis}/lihat', [AdminController::class, 'lihatDokumen']);
+
+$router->get('/admin/akun', [AdminUserController::class, 'index']);
+$router->get('/admin/akun/baru', [AdminUserController::class, 'baru']);
+$router->post('/admin/akun', [AdminUserController::class, 'simpan']);
+$router->get('/admin/akun/{id}/edit', [AdminUserController::class, 'edit']);
+$router->post('/admin/akun/{id}', [AdminUserController::class, 'perbarui']);
+$router->post('/admin/akun/{id}/hapus', [AdminUserController::class, 'hapus']);
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

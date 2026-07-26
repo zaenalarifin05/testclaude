@@ -9,9 +9,14 @@ $cari = $_GET['cari'] ?? '';
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Panel Admin PPDB</h1>
-    <form method="post" action="/admin/logout" class="mb-0">
-        <button type="submit" class="btn btn-sm btn-outline-secondary">Keluar</button>
-    </form>
+    <div class="d-flex gap-2">
+        <?php if (\App\Core\Auth::isSuperadmin()): ?>
+            <a href="/admin/akun" class="btn btn-sm btn-outline-secondary">Kelola Akun</a>
+        <?php endif; ?>
+        <form method="post" action="/admin/logout" class="mb-0">
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Keluar</button>
+        </form>
+    </div>
 </div>
 
 <form method="get" action="/admin" class="row g-2 mb-4">

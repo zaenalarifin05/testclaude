@@ -9,6 +9,7 @@ Aplikasi web Penerimaan Peserta Didik Baru (PPDB) — PHP native (OOP, tanpa fra
 - Cek status pendaftaran (lewat nomor pendaftaran + NIK orang tua)
 - Upload dokumen persyaratan (Kartu Keluarga, Akta Kelahiran, Ijazah/SKL, Pas Foto)
 - Panel admin: verifikasi dokumen, jadwalkan wawancara, tetapkan hasil seleksi, konfirmasi pembayaran
+- Kelola akun admin (tambah/edit/hapus, role `panitia`/`superadmin`) — khusus superadmin
 
 ## Kebutuhan
 
@@ -80,7 +81,8 @@ src/
   Controllers/ Logika tiap halaman (Home, Pendaftaran, Status, Auth, Admin)
   Views/      Template PHP + Bootstrap, dikelompokkan per controller
 storage/uploads/  Dokumen yang diunggah (di luar public/, tidak bisa diakses langsung)
-docs/         data-model.md (rancangan data) & schema.sql (skema + seed)
+docs/         data-model.md (rancangan data), schema.sql (skema + seed),
+              prototype.html (mockup UI standalone/offline, hanya referensi desain — bukan bagian aplikasi)
 ```
 
 ## Rute yang Tersedia
@@ -94,6 +96,12 @@ docs/         data-model.md (rancangan data) & schema.sql (skema + seed)
 | POST | `/status/dokumen/{jenis}` | Upload dokumen oleh orang tua |
 | GET/POST | `/admin/login` · POST `/admin/logout` | Login/logout panitia |
 | GET | `/admin` | Dashboard admin (daftar & filter pendaftar) |
+| GET | `/admin/akun` | Kelola akun admin (khusus role `superadmin`) |
+| GET | `/admin/akun/baru` | Form tambah akun admin |
+| POST | `/admin/akun` | Simpan akun admin baru |
+| GET | `/admin/akun/{id}/edit` | Form edit akun admin |
+| POST | `/admin/akun/{id}` | Simpan perubahan akun admin |
+| POST | `/admin/akun/{id}/hapus` | Hapus akun admin |
 | GET | `/admin/pendaftar/{id}` | Kelola satu pendaftar |
 | POST | `/admin/pendaftar/{id}/dokumen/{jenis}` | Verifikasi/tolak dokumen |
 | GET | `/admin/pendaftar/{id}/dokumen/{jenis}/lihat` | Lihat file dokumen yang diunggah |
@@ -104,7 +112,6 @@ docs/         data-model.md (rancangan data) & schema.sql (skema + seed)
 ## Keterbatasan Saat Ini
 
 - Satu sekolah per deployment (bukan platform multi-sekolah).
-- Belum ada halaman kelola akun admin lewat UI (tambah/hapus admin masih manual lewat database).
 - Belum ada notifikasi email/WhatsApp otomatis ke orang tua saat status berubah — tombol WA di
   beranda hanya membuka chat manual, bukan integrasi otomatis.
 - Foto hero di beranda masih placeholder sampai `public/assets/img/hero-sekolah.jpg` diisi.
