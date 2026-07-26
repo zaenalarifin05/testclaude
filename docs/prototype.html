@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPDB — SMA Cendekia Nusantara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A4A;
+    --navy-deep:#101A30;
+    --navy-soft:#2C3F66;
+    --gold:#C89B4A;
+    --gold-soft:#E4C888;
+    --paper:#F7F3EA;
+    --paper-dim:#EFE9DA;
+    --paper-card:#FFFDF8;
+    --ink:#23201C;
+    --ink-soft:#6B6558;
+    --sage:#3F7D58;
+    --sage-soft:#E6EFE8;
+    --clay:#B5473A;
+    --clay-soft:#F5E4E1;
+    --amber:#B8842E;
+    --amber-soft:#F5E9D3;
+    --line:rgba(27,42,74,0.14);
+    --radius:6px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, rgba(27,42,74,0.015) 0px, rgba(27,42,74,0.015) 1px, transparent 1px, transparent 3px);
+    color:var(--ink);
+    font-family:'Public Sans',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces',serif;margin:0 0 .4em 0;color:var(--navy-deep);font-weight:600;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:.72rem;
+    font-weight:600;
+  }
+  a{color:var(--navy);}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;font-size:.95rem;}
+
+  /* ---- Letterhead header ---- */
+  .kop{
+    background:linear-gradient(155deg, var(--navy-deep), var(--navy) 70%);
+    padding:1.6rem 1.5rem;
+    border-bottom:4px double var(--gold-soft);
+    color:#fff;
+  }
+  .kop-inner{
+    max-width:960px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  }
+  .kop-left{display:flex;align-items:center;gap:.85rem;cursor:pointer;}
+  .kop-mark{
+    width:46px;height:46px;border-radius:50%;
+    border:1.5px solid var(--gold-soft);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem;color:var(--gold-soft);
+    flex-shrink:0;
+  }
+  .kop-title{font-family:'Fraunces',serif;font-weight:600;font-size:1.25rem;color:#fff;line-height:1.15;}
+  .kop-sub{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.12em;color:var(--gold-soft);text-transform:uppercase;margin-top:.15rem;}
+  .kop-right{text-align:right;}
+  .kop-right .eyebrow{color:var(--gold-soft);}
+
+  .wrap{max-width:960px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+  .wrap-narrow{max-width:640px;}
+
+  /* ---- Cards & buttons ---- */
+  .card{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.5rem;
+    margin-bottom:1.25rem;
+  }
+  .card-tight{padding:1.1rem 1.25rem;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media(max-width:720px){.grid3{grid-template-columns:1fr;}.grid2{grid-template-columns:1fr;}}
+
+  .choice-card{
+    background:var(--paper-card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:1.6rem 1.3rem;cursor:pointer;transition:border-color .15s, transform .15s;
+    display:flex;flex-direction:column;gap:.5rem;
+  }
+  .choice-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+  .choice-card .ico{width:34px;height:34px;color:var(--navy);}
+  .choice-card h3{margin-bottom:.1rem;font-size:1.05rem;}
+  .choice-card p{margin:0;color:var(--ink-soft);font-size:.88rem;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+    border-radius:4px;border:1px solid transparent;
+    padding:.65rem 1.15rem;font-weight:600;font-size:.9rem;
+    transition:background .15s,border-color .15s,opacity .15s;
+  }
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-soft);}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-gold{background:var(--gold);color:var(--navy-deep);}
+  .btn-gold:hover{background:var(--gold-soft);}
+  .btn-outline{background:transparent;border-color:var(--navy);color:var(--navy);}
+  .btn-outline:hover{background:rgba(27,42,74,0.06);}
+  .btn-danger{background:transparent;border-color:var(--clay);color:var(--clay);}
+  .btn-danger:hover{background:var(--clay-soft);}
+  .btn-sm{padding:.4rem .8rem;font-size:.8rem;}
+  .btn-block{width:100%;}
+  .btn-row{display:flex;gap:.6rem;flex-wrap:wrap;}
+
+  label{display:block;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;font-size:.68rem;font-weight:600;color:var(--ink-soft);margin-bottom:.3rem;}
+  .field{margin-bottom:1rem;}
+  input[type=text],input[type=email],input[type=tel],input[type=date],input[type=time],input[type=number],select,textarea{
+    width:100%;padding:.6rem .7rem;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink);
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
+  .hint{font-size:.78rem;color:var(--ink-soft);margin-top:.25rem;}
+  .checkline{display:flex;align-items:center;gap:.5rem;font-family:'Public Sans';text-transform:none;letter-spacing:0;font-weight:400;font-size:.85rem;color:var(--ink);}
+  .checkline input{width:auto;}
+  .error-text{color:var(--clay);font-size:.78rem;margin-top:.3rem;}
+
+  /* ---- Mini step progress (registration form) ---- */
+  .mini-steps{display:flex;gap:.4rem;margin-bottom:1.5rem;}
+  .mini-step{flex:1;text-align:center;}
+  .mini-step .dot{width:26px;height:26px;border-radius:50%;margin:0 auto .35rem;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono';font-size:.75rem;font-weight:600;border:1.5px solid var(--line);color:var(--ink-soft);background:#fff;}
+  .mini-step.active .dot{border-color:var(--navy);background:var(--navy);color:#fff;}
+  .mini-step.done .dot{border-color:var(--sage);background:var(--sage);color:#fff;}
+  .mini-step .lbl{font-size:.68rem;color:var(--ink-soft);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.04em;}
+  .mini-step.active .lbl{color:var(--navy);font-weight:600;}
+
+  /* ---- Wave / gelombang tide bar (signature motif) ---- */
+  .wave-bar{display:flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .wave-seg{
+    flex:1;padding:.85rem .7rem;position:relative;background:var(--paper-dim);
+    border-right:1px solid var(--line);
+  }
+  .wave-seg:last-child{border-right:none;}
+  .wave-seg .wname{font-family:'Fraunces',serif;font-weight:600;font-size:.88rem;color:var(--ink-soft);}
+  .wave-seg .wperiod{font-size:.7rem;color:var(--ink-soft);margin-top:.1rem;}
+  .wave-seg .wprice{font-family:'IBM Plex Mono';font-size:.72rem;margin-top:.35rem;color:var(--ink-soft);}
+  .wave-seg.active{background:linear-gradient(180deg, var(--navy) 0%, var(--navy-soft) 100%);}
+  .wave-seg.active .wname,.wave-seg.active .wperiod,.wave-seg.active .wprice{color:#fff;}
+  .wave-seg.active::after{
+    content:"GELOMBANG AKTIF";
+    position:absolute;top:0;left:0;right:0;
+    background:var(--gold);color:var(--navy-deep);
+    font-family:'IBM Plex Mono';font-size:.6rem;letter-spacing:.08em;text-align:center;padding:.15rem 0;font-weight:700;
+  }
+  .wave-seg.active{padding-top:1.55rem;}
+  .wave-seg.selectable{cursor:pointer;}
+  .wave-seg.chosen{outline:2px solid var(--gold);outline-offset:-2px;}
+
+  /* ---- Status stepper (ledger style) ---- */
+  .ledger{border-left:2px solid var(--line);margin-left:14px;padding-left:1.4rem;}
+  .ledger-item{position:relative;padding-bottom:1.5rem;}
+  .ledger-item:last-child{padding-bottom:0;}
+  .ledger-item::before{
+    content:"";position:absolute;left:-1.95rem;top:.15rem;width:20px;height:20px;border-radius:50%;
+    background:#fff;border:2px solid var(--line);
+  }
+  .ledger-item.done::before{border-color:var(--sage);background:var(--sage);}
+  .ledger-item.done::after{
+    content:"✓";position:absolute;left:-1.87rem;top:.05rem;color:#fff;font-size:.65rem;font-weight:700;line-height:20px;
+  }
+  .ledger-item.current::before{border-color:var(--navy);background:var(--gold);}
+  .ledger-item.blocked::before{border-color:var(--clay);}
+  .ledger-item h4{font-size:.95rem;margin-bottom:.15rem;}
+  .ledger-item .desc{font-size:.82rem;color:var(--ink-soft);}
+  .tag{display:inline-block;font-family:'IBM Plex Mono';font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:.15rem .5rem;border-radius:3px;margin-left:.4rem;vertical-align:middle;}
+  .tag-wait{background:var(--amber-soft);color:var(--amber);}
+  .tag-ok{background:var(--sage-soft);color:var(--sage);}
+  .tag-no{background:var(--clay-soft);color:var(--clay);}
+  .tag-navy{background:rgba(27,42,74,.08);color:var(--navy);}
+
+  /* ---- Stamp (signature element for "diterima") ---- */
+  .stamp-wrap{display:flex;justify-content:center;padding:1.2rem 0 .6rem;}
+  .stamp{
+    width:150px;height:150px;border-radius:50%;
+    border:3px solid var(--navy);
+    outline:1px dashed var(--navy);
+    outline-offset:6px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transform:rotate(-9deg);
+    color:var(--navy);
+    mix-blend-mode:multiply;
+    opacity:.88;
+    text-align:center;
+  }
+  .stamp .s1{font-family:'IBM Plex Mono';font-size:.55rem;letter-spacing:.12em;font-weight:700;}
+  .stamp .s2{font-family:'Fraunces',serif;font-weight:700;font-size:1.15rem;line-height:1.05;margin:.25rem 0;}
+  .stamp .s3{font-family:'IBM Plex Mono';font-size:.5rem;letter-spacing:.08em;}
+
+  /* ---- Notification cards ---- */
+  .notif{border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:4px;padding:.75rem .9rem;margin-bottom:.6rem;background:#fff;}
+  .notif.email{border-left-color:var(--gold);}
+  .notif-top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;flex-wrap:wrap;}
+  .notif-channel{font-family:'IBM Plex Mono';font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--navy);}
+  .notif.email .notif-channel{color:var(--amber);}
+  .notif-time{font-family:'IBM Plex Mono';font-size:.68rem;color:var(--ink-soft);}
+  .notif-title{font-weight:700;font-size:.88rem;margin-top:.2rem;}
+  .notif-msg{font-size:.85rem;color:var(--ink-soft);margin-top:.15rem;}
+
+  .doc-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .doc-row:last-child{border-bottom:none;}
+  .doc-name{font-weight:600;font-size:.92rem;}
+  .doc-desc{font-size:.78rem;color:var(--ink-soft);}
+
+  table.admin-table{width:100%;border-collapse:collapse;font-size:.86rem;}
+  table.admin-table th{text-align:left;font-family:'IBM Plex Mono';font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:.5rem .5rem;}
+  table.admin-table td{padding:.6rem .5rem;border-bottom:1px solid var(--line);vertical-align:middle;}
+  table.admin-table tr:hover td{background:rgba(27,42,74,.03);}
+  .row-link{color:var(--navy);font-weight:600;text-decoration:none;cursor:pointer;}
+  .row-link:hover{text-decoration:underline;}
+
+  .back-link{display:inline-flex;align-items:center;gap:.3rem;color:var(--ink-soft);font-size:.85rem;text-decoration:none;margin-bottom:1rem;cursor:pointer;font-family:'IBM Plex Mono';}
+  .back-link:hover{color:var(--navy);}
+
+  .empty{text-align:center;padding:2.5rem 1rem;color:var(--ink-soft);}
+  .empty h3{color:var(--ink-soft);}
+
+  .toast{
+    position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);
+    background:var(--navy-deep);color:#fff;padding:.75rem 1.2rem;border-radius:6px;
+    font-size:.85rem;box-shadow:0 6px 24px rgba(0,0,0,.25);z-index:999;
+    border:1px solid var(--gold-soft);
+  }
+  .id-badge{
+    display:inline-block;font-family:'IBM Plex Mono';font-weight:600;letter-spacing:.03em;
+    background:var(--navy-deep);color:var(--gold-soft);padding:.3rem .7rem;border-radius:4px;font-size:.9rem;
+  }
+  .price{font-family:'IBM Plex Mono';font-weight:600;color:var(--navy);}
+  .divider{border:none;border-top:1px solid var(--line);margin:1.2rem 0;}
+  .footer-note{text-align:center;font-size:.75rem;color:var(--ink-soft);margin-top:2rem;font-family:'IBM Plex Mono';}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+  "use strict";
+
+  /* ============ CONFIG ============ */
+  var SCHOOL_NAME = "SMA Cendekia Nusantara";
+  var ADMIN_PASSWORD = "admin123"; // demo only
+  var ACTIVATION_MONTH_LABEL = "Juli 2027";
+  var GELOMBANG_ORDER = ["early_bird","tahap1","tahap2","tahap_akhir"];
+  var GELOMBANG_LABEL = {
+    early_bird:"Early Bird", tahap1:"Tahap 1", tahap2:"Tahap 2", tahap_akhir:"Tahap Akhir"
+  };
+  var GELOMBANG_PERIOD = {
+    early_bird:"1–31 Jul 2026", tahap1:"1–31 Agu 2026", tahap2:"1–30 Sep 2026", tahap_akhir:"1–31 Okt 2026"
+  };
+  var DEFAULT_PRICING = { early_bird:2000000, tahap1:2500000, tahap2:3000000, tahap_akhir:3500000 };
+
+  var DOC_DEFS = [
+    {key:"kk", name:"Kartu Keluarga (KK)", desc:"Fotokopi/scan Kartu Keluarga yang masih berlaku"},
+    {key:"akta", name:"Akta Kelahiran", desc:"Fotokopi/scan akta kelahiran calon siswa"},
+    {key:"ijazah", name:"Ijazah / Surat Keterangan Lulus (SKL)", desc:"Dari sekolah asal"},
+    {key:"foto", name:"Pas Foto 3x4", desc:"Foto terbaru calon siswa, latar belakang merah/biru"}
+  ];
+
+  var JENJANG_TUJUAN = ["SD","SMP","SMA"];
+  var JENJANG_ASAL = ["TK/PAUD","SD","SMP"];
+
+  /* ============ STORAGE HELPERS ============ */
+  /* Storage now uses the browser's own localStorage, so this file works fully
+     standalone/offline once downloaded — no Claude environment required.
+     Trade-off: data lives only in THIS browser on THIS computer. Orang tua dan
+     admin harus memakai perangkat/browser yang sama agar data saling terlihat. */
+  function lsNamespace(shared){ return "ppdb_local_"+(shared?"shared":"personal")+"__"; }
+  function storageAvailable(){
+    try{
+      var t="__ppdb_test__"; localStorage.setItem(t,"1"); localStorage.removeItem(t); return true;
+    }catch(e){ return false; }
+  }
+  async function sGet(key, shared){
+    try{
+      var raw = localStorage.getItem(lsNamespace(shared)+key);
+      return raw !== null ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  async function sSet(key, value, shared){
+    try{
+      localStorage.setItem(lsNamespace(shared)+key, JSON.stringify(value));
+      return true;
+    }catch(e){ return false; }
+  }
+  async function sDelete(key, shared){
+    try{ localStorage.removeItem(lsNamespace(shared)+key); }catch(e){}
+  }
+  async function sList(prefix, shared){
+    try{
+      var ns = lsNamespace(shared);
+      var full = ns+prefix;
+      var out = [];
+      for(var i=0;i<localStorage.length;i++){
+        var k = localStorage.key(i);
+        if(k && k.indexOf(full)===0) out.push(k.slice(ns.length));
+      }
+      return out;
+    }catch(e){ return []; }
+  }
+
+  /* ============ UTIL ============ */
+  function uid(){
+    var y = new Date().getFullYear();
+    var n = Math.floor(100000 + Math.random()*900000);
+    return "PPDB-"+y+"-"+n;
+  }
+  function notifId(){ return "n"+Math.random().toString(36).slice(2,9); }
+  function nowISO(){ return new Date().toISOString(); }
+  function fmtDateTime(iso){
+    if(!iso) return "-";
+    try{
+      var d = new Date(iso);
+      return d.toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    }catch(e){return iso;}
+  }
+  function fmtDate(dstr){
+    if(!dstr) return "-";
+    try{
+      var d = new Date(dstr+"T00:00:00");
+      return d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+    }catch(e){return dstr;}
+  }
+  function rupiah(n){
+    try{
+      return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);
+    }catch(e){ return "Rp "+n; }
+  }
+  function esc(s){
+    if(s===undefined||s===null) return "";
+    return String(s).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function qs(sel,root){ return (root||document).querySelector(sel); }
+  function qsa(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+
+  /* ============ SETTINGS ============ */
+  async function ensureSettings(){
+    var s = await sGet("ppdb:settings", true);
+    if(!s){
+      s = { activeGelombang:"early_bird", pricing:Object.assign({},DEFAULT_PRICING) };
+      await sSet("ppdb:settings", s, true);
+    }
+    if(!s.pricing) s.pricing = Object.assign({},DEFAULT_PRICING);
+    return s;
+  }
+
+  /* ============ REGISTRATIONS ============ */
+  function newRegistration(gelombang, amount){
+    return {
+      id: uid(),
+      createdAt: nowISO(),
+      gelombang: gelombang,
+      parent: {nama:"",nik:"",hubungan:"Ayah",hp:"",email:"",alamat:""},
+      student: {nama:"",tempatLahir:"",tanggalLahir:"",jenisKelamin:"L",nisn:"",jenjangTujuan:"SD",alamatSama:true,alamatSiswa:""},
+      prevSchool: {nama:"",jenjang:"TK/PAUD",tahunLulus:""},
+      documents: {
+        kk:{uploaded:false,filename:"",verified:false},
+        akta:{uploaded:false,filename:"",verified:false},
+        ijazah:{uploaded:false,filename:"",verified:false},
+        foto:{uploaded:false,filename:"",verified:false}
+      },
+      interview:{date:"",time:"",location:"",done:false},
+      seleksi:{result:"",decidedAt:""},
+      payment:{amount:amount||0,reported:false,reportedAt:"",confirmed:false,confirmedAt:""},
+      activated:false, activatedAt:"",
+      notifications:[]
+    };
+  }
+  async function saveReg(reg){ return sSet("ppdb:reg:"+reg.id, reg, true); }
+  async function loadReg(id){ return sGet("ppdb:reg:"+id, true); }
+  async function loadAllRegs(){
+    var keys = await sList("ppdb:reg:", true);
+    var out = [];
+    for(var i=0;i<keys.length;i++){
+      var r = await sGet(keys[i], true);
+      if(r) out.push(r);
+    }
+    out.sort(function(a,b){ return new Date(b.createdAt)-new Date(a.createdAt); });
+    return out;
+  }
+  /* ============ SEED / CONTOH DATA ============ */
+  var SEED_FIRST = ["Ahmad","Siti","Muhammad","Nur","Putri","Rizky","Bagus","Ayu","Dewi","Fajar","Intan","Arya","Salsabila","Rendra","Kirana","Bima","Zahra","Yusuf","Aulia","Raihan","Fitri","Galang","Naila","Wahyu","Citra","Reza","Larasati","Farhan","Anisa","Dimas"];
+  var SEED_LAST = ["Pratama","Wijaya","Saputra","Ramadhani","Utami","Santoso","Kusuma","Hidayat","Permata","Nugroho","Anggraini","Firmansyah","Lestari","Setiawan","Maharani","Putra","Handayani","Prasetyo","Wulandari","Susanto"];
+  var SEED_ADDR = [
+    "Jl. Gajah Mada No. 12, Sidoarjo","Jl. Diponegoro No. 45, Sidoarjo","Perum Griya Asri Blok C2, Waru, Sidoarjo",
+    "Jl. Raya Krian No. 8, Krian, Sidoarjo","Jl. Ahmad Yani No. 21, Sepanjang, Sidoarjo","Jl. Kutisari Indah No. 5, Surabaya",
+    "Jl. Kenjeran No. 100, Surabaya","Perum Pondok Candra Blok D1, Waru, Sidoarjo","Jl. Raya Gedangan No. 33, Gedangan, Sidoarjo",
+    "Jl. Veteran No. 9, Buduran, Sidoarjo","Jl. Merdeka No. 17, Taman, Sidoarjo","Jl. Pahlawan No. 25, Candi, Sidoarjo",
+    "Jl. Raya Tulangan No. 3, Tulangan, Sidoarjo","Jl. Brantas No. 14, Porong, Sidoarjo","Jl. Kartini No. 6, Sukodono, Sidoarjo"
+  ];
+  var SEED_SCHOOLS = ["SDN Sidokare 1","SD Islam Al-Falah","SDN Pucang 2","SD Muhammadiyah 5","SDN Lemahputro 1","SD Kristen Petra","SDN Sekardangan","SD Al-Azhar","SDN Sidoklumpuk","SDN Celep 1","SDN Wonocolo 2","SD Plus Al-Hikmah"];
+
+  function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randNik(){ var s=""; for(var i=0;i<16;i++) s+=Math.floor(Math.random()*10); return s; }
+  function randPhone(){ var s="08"; for(var i=0;i<10;i++) s+=Math.floor(Math.random()*10); return s; }
+  function randDateOffset(daysOffset){
+    var d = new Date(); d.setDate(d.getDate()+daysOffset);
+    return d.toISOString().slice(0,10);
+  }
+  function makeRandomReg(gelombangPool){
+    var fn = randPick(SEED_FIRST), ln = randPick(SEED_LAST);
+    var studentName = fn+" "+ln;
+    var parentFirst = randPick(SEED_FIRST), parentLast = randPick(SEED_LAST);
+    var gel = randPick(gelombangPool || GELOMBANG_ORDER.slice(0,2));
+    var amount = (state.settings && state.settings.pricing[gel]) || DEFAULT_PRICING[gel];
+    var reg = newRegistration(gel, amount);
+    reg.parent.nama = (Math.random()<0.5?"Bapak ":"Ibu ")+parentFirst+" "+parentLast;
+    reg.parent.nik = randNik();
+    reg.parent.hubungan = randPick(["Ayah","Ibu","Wali"]);
+    reg.parent.hp = randPhone();
+    reg.parent.email = (parentFirst+"."+parentLast).toLowerCase()+"@gmail.com";
+    reg.parent.alamat = randPick(SEED_ADDR);
+    reg.student.nama = studentName;
+    reg.student.jenjangTujuan = randPick(JENJANG_TUJUAN);
+    reg.student.tempatLahir = randPick(["Sidoarjo","Surabaya","Malang","Gresik"]);
+    reg.student.tanggalLahir = randDateOffset(-3650 - Math.floor(Math.random()*365));
+    reg.student.jenisKelamin = Math.random()<0.5?"L":"P";
+    reg.student.alamatSama = true;
+    reg.prevSchool.nama = randPick(SEED_SCHOOLS);
+    reg.prevSchool.jenjang = "SD";
+    reg.prevSchool.tahunLulus = "2026";
+    reg.createdAt = new Date(Date.now() - Math.floor(Math.random()*10)*86400000).toISOString();
+    return reg;
+  }
+  async function generateSeedData(){
+    var batch = [];
+    // 10 orang: baru terdaftar, belum unggah dokumen
+    for(var i=0;i<10;i++){
+      var r1 = makeRandomReg();
+      addNotifAt(r1, "Pendaftaran Diterima", "Halo "+r1.parent.nama+", pendaftaran "+r1.student.nama+" dengan nomor "+r1.id+" pada gelombang "+GELOMBANG_LABEL[r1.gelombang]+" telah kami terima. Silakan lengkapi dokumen di dashboard Anda.", -6);
+      batch.push(r1);
+    }
+    // 15 orang: sudah melengkapi dokumen (menunggu verifikasi)
+    for(var j=0;j<15;j++){
+      var r2 = makeRandomReg();
+      DOC_DEFS.forEach(function(dd){
+        r2.documents[dd.key].uploaded = true;
+        r2.documents[dd.key].filename = dd.key.toUpperCase()+"_"+r2.student.nama.replace(/\s+/g,"_")+".pdf";
+      });
+      addNotifAt(r2, "Pendaftaran Diterima", "Halo "+r2.parent.nama+", pendaftaran "+r2.student.nama+" dengan nomor "+r2.id+" pada gelombang "+GELOMBANG_LABEL[r2.gelombang]+" telah kami terima. Silakan lengkapi dokumen di dashboard Anda.", -5);
+      addNotifAt(r2, "Semua Dokumen Terunggah", "Seluruh dokumen "+r2.student.nama+" telah diunggah dan akan segera diverifikasi panitia PPDB.", -3);
+      batch.push(r2);
+    }
+    // 5 orang: sudah transfer, belum dikonfirmasi bendahara
+    for(var k=0;k<5;k++){
+      var r3 = makeRandomReg();
+      DOC_DEFS.forEach(function(dd){
+        r3.documents[dd.key].uploaded = true; r3.documents[dd.key].verified = true;
+        r3.documents[dd.key].filename = dd.key.toUpperCase()+"_"+r3.student.nama.replace(/\s+/g,"_")+".pdf";
+      });
+      r3.interview.date = randDateOffset(-4-k);
+      r3.interview.time = "09:0"+(k%6);
+      r3.interview.location = "Ruang Wawancara, Kampus "+SCHOOL_NAME;
+      r3.interview.done = true;
+      r3.seleksi.result = "diterima";
+      r3.seleksi.decidedAt = new Date(Date.now()-2*86400000).toISOString();
+      r3.payment.reported = true;
+      r3.payment.reportedAt = new Date(Date.now()-1*86400000).toISOString();
+      addNotifAt(r3, "Pendaftaran Diterima", "Halo "+r3.parent.nama+", pendaftaran "+r3.student.nama+" dengan nomor "+r3.id+" pada gelombang "+GELOMBANG_LABEL[r3.gelombang]+" telah kami terima.", -8);
+      addNotifAt(r3, "Dokumen Terverifikasi", "Seluruh dokumen "+r3.student.nama+" telah diverifikasi.", -6);
+      addNotifAt(r3, "Jadwal Wawancara & Seleksi", "Wawancara "+r3.student.nama+" dijadwalkan pada "+fmtDate(r3.interview.date)+" pukul "+r3.interview.time+" WIB.", -5);
+      addNotifAt(r3, "Hasil Seleksi PPDB", "Selamat! "+r3.student.nama+" dinyatakan DITERIMA. Silakan lakukan pembayaran PPDB sebesar "+rupiah(r3.payment.amount)+".", -2);
+      addNotifAt(r3, "Konfirmasi Pembayaran Diterima", "Kami telah menerima konfirmasi pembayaran sebesar "+rupiah(r3.payment.amount)+" dari Anda. Bendahara akan memverifikasi dalam 1x24 jam.", -1);
+      batch.push(r3);
+    }
+    for(var m=0;m<batch.length;m++){ await saveReg(batch[m]); }
+    return batch.length;
+  }
+  function addNotifAt(reg, title, message, daysOffset){
+    var ts = new Date(Date.now()+(daysOffset||0)*86400000).toISOString();
+    reg.notifications.push({id:notifId(), ts:ts, channel:"WhatsApp", title:title, message:message});
+    reg.notifications.push({id:notifId(), ts:ts, channel:"Email", title:title, message:message});
+  }
+
+  function addNotif(reg, title, message){
+    reg.notifications.push({id:notifId(), ts:nowISO(), channel:"WhatsApp", title:title, message:message});
+    reg.notifications.push({id:notifId(), ts:nowISO(), channel:"Email", title:title, message:message});
+  }
+  function allDocsUploaded(reg){
+    return DOC_DEFS.every(function(d){ return reg.documents[d.key].uploaded; });
+  }
+  function allDocsVerified(reg){
+    return DOC_DEFS.every(function(d){ return reg.documents[d.key].verified; });
+  }
+  function computeStage(reg){
+    if(reg.activated) return "siswa_aktif";
+    if(reg.payment.confirmed) return "lunas";
+    if(reg.payment.reported) return "menunggu_konfirmasi_bayar";
+    if(reg.seleksi.result === "diterima") return "menunggu_pembayaran";
+    if(reg.seleksi.result === "tidak") return "tidak_diterima";
+    if(reg.seleksi.result === "cadangan") return "cadangan";
+    if(reg.interview.done) return "menunggu_hasil";
+    if(reg.interview.date) return "menunggu_wawancara";
+    if(allDocsVerified(reg)) return "menunggu_jadwal";
+    if(allDocsUploaded(reg)) return "menunggu_verifikasi";
+    return "lengkapi_dokumen";
+  }
+
+  /* ============ PERSONAL (my registrations, convenience) ============ */
+  async function addMyReg(id, nama){
+    var mine = await sGet("me:my_regs", false) || [];
+    mine.unshift({id:id, nama:nama, ts:nowISO()});
+    await sSet("me:my_regs", mine, false);
+  }
+  async function getMyRegs(){
+    return (await sGet("me:my_regs", false)) || [];
+  }
+
+  /* ============ APP STATE ============ */
+  var state = {
+    view:"home",
+    step:1,
+    regDraft:null,
+    settings:null,
+    currentRegId:null,
+    adminAuthed:false,
+    adminRegId:null,
+    adminGelombangFilter:"all",
+    adminStageFilter:"all",
+    adminSearch:"",
+    adminRegsCache:[],
+    lookupError:"",
+    formErrors:{},
+    toast:null
+  };
+
+  function showToast(msg){
+    state.toast = msg;
+    render();
+    setTimeout(function(){ state.toast=null; renderToastOnly(); }, 2600);
+  }
+  function renderToastOnly(){
+    var el = qs("#toast-holder");
+    if(el) el.innerHTML = state.toast ? '<div class="toast">'+esc(state.toast)+'</div>' : "";
+  }
+
+  /* ============ ICONS (inline svg, generic) ============ */
+  var ICONS = {
+    formIcon:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="7.5" y1="8" x2="16.5" y2="8"/><line x1="7.5" y1="12" x2="16.5" y2="12"/><line x1="7.5" y1="16" x2="13" y2="16"/></svg>',
+    searchIcon:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="20.5" y2="20.5"/></svg>',
+    adminIcon:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v5c0 5-3.2 8.4-7 10-3.8-1.6-7-5-7-10V6l7-3z"/></svg>'
+  };
+
+  /* ============ RENDER: SHELL ============ */
+  function shell(inner, opts){
+    opts = opts || {};
+    var warnBanner = storageAvailable() ? "" :
+      '<div class="wrap" style="padding-bottom:0;max-width:960px;margin:0 auto;">'+
+        '<div class="card card-tight" style="border-color:var(--clay);background:var(--clay-soft);">'+
+          '<strong style="color:var(--clay);">Penyimpanan browser tidak tersedia.</strong> '+
+          '<span style="font-size:.85rem;">Data tidak akan tersimpan (kemungkinan mode private/incognito, atau pengaturan browser memblokir localStorage). Gunakan mode browser biasa.</span>'+
+        '</div>'+
+      '</div>';
+    return warnBanner+''+
+    '<div class="kop">'+
+      '<div class="kop-inner">'+
+        '<div class="kop-left" data-action="go-home">'+
+          '<div class="kop-mark">CN</div>'+
+          '<div><div class="kop-title">'+esc(SCHOOL_NAME)+'</div><div class="kop-sub">Penerimaan Peserta Didik Baru</div></div>'+
+        '</div>'+
+        '<div class="kop-right">'+
+          '<div class="eyebrow">Sistem PPDB / SPMB</div>'+
+          '<div class="kop-sub" style="color:rgba(255,255,255,.65)">Tahun Ajaran 2026/2027</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="wrap '+(opts.narrow?'wrap-narrow':'')+'">'+ inner +'</div>'+
+    '<div class="footer-note">Versi mandiri (offline) — data tersimpan hanya di browser &amp; komputer ini (localStorage). Tidak tersinkron ke perangkat lain.</div>'+
+    '<div id="toast-holder">'+(state.toast?'<div class="toast">'+esc(state.toast)+'</div>':'')+'</div>';
+  }
+
+  function waveBar(activeKey, opts){
+    opts = opts || {};
+    var html = '<div class="wave-bar">';
+    GELOMBANG_ORDER.forEach(function(k){
+      var active = k===activeKey;
+      var price = state.settings ? state.settings.pricing[k] : DEFAULT_PRICING[k];
+      html += '<div class="wave-seg '+(active?'active':'')+' '+(opts.selectable?'selectable':'')+'" '+(opts.selectable?('data-action="set-active-gelombang" data-key="'+k+'"'):'')+'>'+
+        '<div class="wname">'+GELOMBANG_LABEL[k]+'</div>'+
+        '<div class="wperiod">'+GELOMBANG_PERIOD[k]+'</div>'+
+        '<div class="wprice">'+rupiah(price)+'</div>'+
+      '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  /* ============ RENDER: HOME ============ */
+  function renderHome(){
+    var inner = ''+
+    '<div style="text-align:center;margin-bottom:2rem;">'+
+      '<div class="eyebrow" style="color:var(--gold);">Selamat Datang, Orang Tua &amp; Calon Siswa</div>'+
+      '<h1 style="font-size:1.9rem;margin-top:.3rem;">Pendaftaran Peserta Didik Baru</h1>'+
+      '<p style="color:var(--ink-soft);max-width:520px;margin:.4rem auto 0;">Daftarkan ananda secara online, unggah dokumen, dan pantau setiap tahapan — mulai dari wawancara, hasil seleksi, hingga pembayaran — dalam satu tempat.</p>'+
+    '</div>'+
+    '<div class="grid3">'+
+      '<div class="choice-card" data-action="go-register">'+ICONS.formIcon+
+        '<h3>Daftar Calon Siswa Baru</h3><p>Isi data orang tua dan calon siswa untuk memulai pendaftaran.</p>'+
+        '<span class="btn btn-primary btn-sm" style="margin-top:.5rem;align-self:flex-start;">Mulai Daftar</span>'+
+      '</div>'+
+      '<div class="choice-card" data-action="go-check">'+ICONS.searchIcon+
+        '<h3>Cek Status Pendaftaran</h3><p>Sudah daftar? Lihat status dokumen, jadwal wawancara, dan hasil seleksi.</p>'+
+        '<span class="btn btn-outline btn-sm" style="margin-top:.5rem;align-self:flex-start;">Cek Status</span>'+
+      '</div>'+
+      '<div class="choice-card" data-action="go-admin-login">'+ICONS.adminIcon+
+        '<h3>Login Admin Sekolah</h3><p>Panel untuk verifikasi dokumen, jadwal, hasil seleksi, dan pembayaran.</p>'+
+        '<span class="btn btn-outline btn-sm" style="margin-top:.5rem;align-self:flex-start;">Masuk Admin</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card" style="margin-top:1.5rem;">'+
+      '<div class="eyebrow" style="color:var(--ink-soft);margin-bottom:.6rem;">Gelombang Pendaftaran Tahun Ajaran 2026/2027</div>'+
+      waveBar(state.settings ? state.settings.activeGelombang : "early_bird")+
+    '</div>'+
+    '<div class="card card-tight" style="background:var(--amber-soft);border-color:var(--amber);">'+
+      '<strong style="color:var(--amber);">Catatan versi ini:</strong> '+
+      '<span style="font-size:.85rem;color:var(--ink);">Aplikasi berjalan mandiri (offline) dan menyimpan data langsung di browser komputer ini. Untuk alur demo yang lengkap, gunakan komputer/browser yang sama saat mendaftar sebagai orang tua maupun saat masuk sebagai admin.</span>'+
+    '</div>';
+    return shell(inner);
+  }
+
+  /* ============ RENDER: REGISTER FORM ============ */
+  var STEP_LABELS = ["Data Ortu","Data Siswa","Sekolah Asal","Review"];
+  function miniSteps(current){
+    var html = '<div class="mini-steps">';
+    STEP_LABELS.forEach(function(lbl,i){
+      var n=i+1;
+      var cls = n<current?"done":(n===current?"active":"");
+      html += '<div class="mini-step '+cls+'"><div class="dot">'+(n<current?'✓':n)+'</div><div class="lbl">'+lbl+'</div></div>';
+    });
+    html += '</div>';
+    return html;
+  }
+  function fieldErr(key){
+    return state.formErrors[key] ? '<div class="error-text">'+esc(state.formErrors[key])+'</div>' : '';
+  }
+  function renderRegister(){
+    var d = state.regDraft;
+    var back = '<a class="back-link" data-action="go-home">&larr; kembali ke beranda</a>';
+    var body = "";
+    if(state.step===1){
+      body = ''+
+      '<h2>Data Orang Tua / Wali</h2>'+
+      '<p style="color:var(--ink-soft);font-size:.88rem;margin-top:-.5rem;">Data ini menjadi syarat awal pendaftaran dan akan kami gunakan untuk mengirim notifikasi.</p>'+
+      '<div class="grid2">'+
+        '<div class="field"><label>Nama Lengkap Orang Tua/Wali</label><input type="text" id="f-p-nama" value="'+esc(d.parent.nama)+'">'+fieldErr('p-nama')+'</div>'+
+        '<div class="field"><label>NIK (16 digit)</label><input type="text" id="f-p-nik" maxlength="16" value="'+esc(d.parent.nik)+'">'+fieldErr('p-nik')+'</div>'+
+      '</div>'+
+      '<div class="grid2">'+
+        '<div class="field"><label>Hubungan dengan Calon Siswa</label><select id="f-p-hubungan">'+
+          ["Ayah","Ibu","Wali"].map(function(h){return '<option value="'+h+'" '+(d.parent.hubungan===h?'selected':'')+'>'+h+'</option>';}).join('')+
+        '</select></div>'+
+        '<div class="field"><label>No. HP / WhatsApp Aktif</label><input type="tel" id="f-p-hp" value="'+esc(d.parent.hp)+'" placeholder="08xxxxxxxxxx">'+fieldErr('p-hp')+'</div>'+
+      '</div>'+
+      '<div class="field"><label>Email Aktif</label><input type="email" id="f-p-email" value="'+esc(d.parent.email)+'" placeholder="nama@email.com">'+fieldErr('p-email')+'</div>'+
+      '<div class="field"><label>Alamat Lengkap</label><textarea id="f-p-alamat" rows="2">'+esc(d.parent.alamat)+'</textarea>'+fieldErr('p-alamat')+'</div>'+
+      '<div class="btn-row" style="justify-content:flex-end;"><button class="btn btn-primary" data-action="step-next">Lanjut &rarr;</button></div>';
+    } else if(state.step===2){
+      body = ''+
+      '<h2>Data Calon Siswa</h2>'+
+      '<div class="grid2">'+
+        '<div class="field"><label>Nama Lengkap Calon Siswa</label><input type="text" id="f-s-nama" value="'+esc(d.student.nama)+'">'+fieldErr('s-nama')+'</div>'+
+        '<div class="field"><label>Jenjang yang Dituju</label><select id="f-s-jenjang">'+
+          JENJANG_TUJUAN.map(function(j){return '<option value="'+j+'" '+(d.student.jenjangTujuan===j?'selected':'')+'>'+j+'</option>';}).join('')+
+        '</select></div>'+
+      '</div>'+
+      '<div class="grid2">'+
+        '<div class="field"><label>Tempat Lahir</label><input type="text" id="f-s-tempat" value="'+esc(d.student.tempatLahir)+'">'+fieldErr('s-tempat')+'</div>'+
+        '<div class="field"><label>Tanggal Lahir</label><input type="date" id="f-s-tgl" value="'+esc(d.student.tanggalLahir)+'">'+fieldErr('s-tgl')+'</div>'+
+      '</div>'+
+      '<div class="grid2">'+
+        '<div class="field"><label>Jenis Kelamin</label><select id="f-s-jk">'+
+          '<option value="L" '+(d.student.jenisKelamin==='L'?'selected':'')+'>Laki-laki</option>'+
+          '<option value="P" '+(d.student.jenisKelamin==='P'?'selected':'')+'>Perempuan</option>'+
+        '</select></div>'+
+        '<div class="field"><label>NISN (opsional)</label><input type="text" id="f-s-nisn" value="'+esc(d.student.nisn)+'"></div>'+
+      '</div>'+
+      '<div class="field"><label class="checkline" style="margin-bottom:.4rem;"><input type="checkbox" id="f-s-samaalamat" '+(d.student.alamatSama?'checked':'')+'> Alamat calon siswa sama dengan alamat orang tua</label>'+
+        (d.student.alamatSama?'':'<textarea id="f-s-alamat" rows="2" placeholder="Alamat calon siswa">'+esc(d.student.alamatSiswa)+'</textarea>')+
+      '</div>'+
+      '<div class="btn-row" style="justify-content:space-between;"><button class="btn btn-outline" data-action="step-back">&larr; Kembali</button><button class="btn btn-primary" data-action="step-next">Lanjut &rarr;</button></div>';
+    } else if(state.step===3){
+      body = ''+
+      '<h2>Sekolah Asal</h2>'+
+      '<div class="field"><label>Nama Sekolah Asal</label><input type="text" id="f-sc-nama" value="'+esc(d.prevSchool.nama)+'">'+fieldErr('sc-nama')+'</div>'+
+      '<div class="grid2">'+
+        '<div class="field"><label>Jenjang Sekolah Asal</label><select id="f-sc-jenjang">'+
+          JENJANG_ASAL.map(function(j){return '<option value="'+j+'" '+(d.prevSchool.jenjang===j?'selected':'')+'>'+j+'</option>';}).join('')+
+        '</select></div>'+
+        '<div class="field"><label>Tahun Lulus / Perkiraan Lulus</label><input type="text" id="f-sc-tahun" value="'+esc(d.prevSchool.tahunLulus)+'" placeholder="2026">'+fieldErr('sc-tahun')+'</div>'+
+      '</div>'+
+      '<div class="btn-row" style="justify-content:space-between;"><button class="btn btn-outline" data-action="step-back">&larr; Kembali</button><button class="btn btn-primary" data-action="step-next">Lanjut &rarr;</button></div>';
+    } else {
+      var gel = state.settings.activeGelombang;
+      body = ''+
+      '<h2>Review &amp; Kirim Pendaftaran</h2>'+
+      '<div class="card card-tight" style="background:var(--paper-dim);">'+
+        '<div class="eyebrow" style="margin-bottom:.5rem;">Data Orang Tua/Wali</div>'+
+        '<div>'+esc(d.parent.nama)+' ('+esc(d.parent.hubungan)+') — NIK '+esc(d.parent.nik)+'</div>'+
+        '<div style="color:var(--ink-soft);font-size:.85rem;">'+esc(d.parent.hp)+' · '+esc(d.parent.email)+'</div>'+
+        '<div style="color:var(--ink-soft);font-size:.85rem;">'+esc(d.parent.alamat)+'</div>'+
+        '<hr class="divider" style="margin:.8rem 0;">'+
+        '<div class="eyebrow" style="margin-bottom:.5rem;">Data Calon Siswa</div>'+
+        '<div>'+esc(d.student.nama)+' — mendaftar ke jenjang '+esc(d.student.jenjangTujuan)+'</div>'+
+        '<div style="color:var(--ink-soft);font-size:.85rem;">'+esc(d.student.tempatLahir)+', '+fmtDate(d.student.tanggalLahir)+' · '+(d.student.jenisKelamin==='L'?'Laki-laki':'Perempuan')+'</div>'+
+        '<hr class="divider" style="margin:.8rem 0;">'+
+        '<div class="eyebrow" style="margin-bottom:.5rem;">Sekolah Asal</div>'+
+        '<div>'+esc(d.prevSchool.nama)+' ('+esc(d.prevSchool.jenjang)+') — Lulus '+esc(d.prevSchool.tahunLulus)+'</div>'+
+      '</div>'+
+      '<div class="eyebrow" style="color:var(--ink-soft);margin:1.1rem 0 .5rem;">Pendaftaran ini akan masuk pada gelombang berikut</div>'+
+      waveBar(gel)+
+      '<div class="btn-row" style="justify-content:space-between;margin-top:1.3rem;"><button class="btn btn-outline" data-action="step-back">&larr; Kembali</button><button class="btn btn-gold" data-action="submit-register">Kirim Pendaftaran</button></div>';
+    }
+    var inner = back + '<div class="card">'+miniSteps(state.step)+body+'</div>';
+    return shell(inner, {narrow:true});
+  }
+
+  function validateStep(){
+    var d = state.regDraft, errs = {};
+    if(state.step===1){
+      if(!d.parent.nama.trim()) errs['p-nama']="Nama wajib diisi";
+      if(!/^\d{16}$/.test(d.parent.nik.trim())) errs['p-nik']="NIK harus 16 digit angka";
+      if(!/^0\d{8,13}$/.test(d.parent.hp.trim())) errs['p-hp']="Nomor HP tidak valid (awali dengan 0)";
+      if(!/^\S+@\S+\.\S+$/.test(d.parent.email.trim())) errs['p-email']="Format email tidak valid";
+      if(!d.parent.alamat.trim()) errs['p-alamat']="Alamat wajib diisi";
+    } else if(state.step===2){
+      if(!d.student.nama.trim()) errs['s-nama']="Nama calon siswa wajib diisi";
+      if(!d.student.tempatLahir.trim()) errs['s-tempat']="Tempat lahir wajib diisi";
+      if(!d.student.tanggalLahir) errs['s-tgl']="Tanggal lahir wajib diisi";
+    } else if(state.step===3){
+      if(!d.prevSchool.nama.trim()) errs['sc-nama']="Nama sekolah asal wajib diisi";
+      if(!/^\d{4}$/.test(d.prevSchool.tahunLulus.trim())) errs['sc-tahun']="Tahun harus 4 digit";
+    }
+    state.formErrors = errs;
+    return Object.keys(errs).length===0;
+  }
+  function captureStepInputs(){
+    var d = state.regDraft;
+    if(state.step===1){
+      d.parent.nama = qs('#f-p-nama').value;
+      d.parent.nik = qs('#f-p-nik').value;
+      d.parent.hubungan = qs('#f-p-hubungan').value;
+      d.parent.hp = qs('#f-p-hp').value;
+      d.parent.email = qs('#f-p-email').value;
+      d.parent.alamat = qs('#f-p-alamat').value;
+    } else if(state.step===2){
+      d.student.nama = qs('#f-s-nama').value;
+      d.student.jenjangTujuan = qs('#f-s-jenjang').value;
+      d.student.tempatLahir = qs('#f-s-tempat').value;
+      d.student.tanggalLahir = qs('#f-s-tgl').value;
+      d.student.jenisKelamin = qs('#f-s-jk').value;
+      d.student.nisn = qs('#f-s-nisn').value;
+      d.student.alamatSama = qs('#f-s-samaalamat').checked;
+      var alamatEl = qs('#f-s-alamat');
+      if(alamatEl) d.student.alamatSiswa = alamatEl.value;
+    } else if(state.step===3){
+      d.prevSchool.nama = qs('#f-sc-nama').value;
+      d.prevSchool.jenjang = qs('#f-sc-jenjang').value;
+      d.prevSchool.tahunLulus = qs('#f-sc-tahun').value;
+    }
+  }
+
+  /* ============ RENDER: SUCCESS ============ */
+  function renderSuccess(reg){
+    var inner = ''+
+    '<div class="card" style="text-align:center;">'+
+      '<div class="eyebrow" style="color:var(--sage);">Pendaftaran Berhasil Dikirim</div>'+
+      '<h1 style="margin-top:.4rem;">Terima kasih, '+esc(reg.parent.nama)+'</h1>'+
+      '<p style="color:var(--ink-soft);">Pendaftaran ananda <strong>'+esc(reg.student.nama)+'</strong> telah kami terima pada gelombang <strong>'+GELOMBANG_LABEL[reg.gelombang]+'</strong>.</p>'+
+      '<div style="margin:1.2rem 0;">'+
+        '<div class="eyebrow" style="color:var(--ink-soft);">Nomor Pendaftaran Anda</div>'+
+        '<div class="id-badge" style="font-size:1.1rem;margin-top:.4rem;">'+reg.id+'</div>'+
+      '</div>'+
+      '<p class="hint">Simpan nomor ini beserta NIK orang tua — keduanya diperlukan untuk cek status pendaftaran. Notifikasi konfirmasi telah "dikirim" via WhatsApp &amp; Email ke kontak yang Anda daftarkan (lihat simulasi di dashboard).</p>'+
+      '<div class="btn-row" style="justify-content:center;margin-top:1.2rem;">'+
+        '<button class="btn btn-primary" data-action="open-dashboard" data-id="'+reg.id+'">Lihat Dashboard Saya</button>'+
+        '<button class="btn btn-outline" data-action="go-home">Kembali ke Beranda</button>'+
+      '</div>'+
+    '</div>';
+    return shell(inner, {narrow:true});
+  }
+
+  /* ============ RENDER: CHECK STATUS ============ */
+  function renderCheck(){
+    var inner = ''+
+    '<a class="back-link" data-action="go-home">&larr; kembali ke beranda</a>'+
+    '<div class="card">'+
+      '<h2>Cek Status Pendaftaran</h2>'+
+      '<p class="hint" style="margin-bottom:1rem;">Masukkan nomor pendaftaran dan NIK orang tua/wali yang digunakan saat mendaftar.</p>'+
+      '<div class="field"><label>Nomor Pendaftaran</label><input type="text" id="f-lookup-id" placeholder="PPDB-2026-XXXXXX"></div>'+
+      '<div class="field"><label>NIK Orang Tua/Wali</label><input type="text" id="f-lookup-nik" maxlength="16" placeholder="16 digit NIK"></div>'+
+      (state.lookupError?'<div class="error-text" style="margin-bottom:.8rem;">'+esc(state.lookupError)+'</div>':'')+
+      '<button class="btn btn-primary btn-block" data-action="do-lookup">Cek Status</button>'+
+    '</div>';
+    return shell(inner, {narrow:true});
+  }
+
+  /* ============ RENDER: PARENT DASHBOARD ============ */
+  var STAGE_INFO = {
+    lengkapi_dokumen:0, menunggu_verifikasi:1, menunggu_jadwal:2, menunggu_wawancara:3,
+    menunggu_hasil:4, tidak_diterima:4, cadangan:4,
+    menunggu_pembayaran:5, menunggu_konfirmasi_bayar:5, lunas:6, siswa_aktif:7
+  };
+  function renderDashboard(reg){
+    var stage = computeStage(reg);
+    var back = '<a class="back-link" data-action="go-home">&larr; kembali ke beranda</a>';
+
+    var header = ''+
+    '<div class="card">'+
+      '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;align-items:flex-start;">'+
+        '<div>'+
+          '<div class="eyebrow" style="color:var(--ink-soft);">Nomor Pendaftaran</div>'+
+          '<div class="id-badge">'+reg.id+'</div>'+
+        '</div>'+
+        '<div style="text-align:right;">'+
+          '<div class="eyebrow" style="color:var(--ink-soft);">Gelombang</div>'+
+          '<div style="font-family:\'Fraunces\',serif;font-weight:600;">'+GELOMBANG_LABEL[reg.gelombang]+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<hr class="divider">'+
+      '<h2 style="font-size:1.3rem;">'+esc(reg.student.nama)+'</h2>'+
+      '<div style="color:var(--ink-soft);font-size:.88rem;">Calon siswa jenjang '+esc(reg.student.jenjangTujuan)+' · Orang tua: '+esc(reg.parent.nama)+'</div>'+
+    '</div>';
+
+    var docsSection = ''+
+    '<div class="card">'+
+      '<h3>Kelengkapan Dokumen</h3>'+
+      '<p class="hint" style="margin-top:-.3rem;">Unggah seluruh dokumen berikut sebelum jadwal wawancara ditentukan.</p>'+
+      DOC_DEFS.map(function(dd){
+        var doc = reg.documents[dd.key];
+        var statusTag = doc.verified ? '<span class="tag tag-ok">Terverifikasi</span>' : (doc.uploaded ? '<span class="tag tag-wait">Menunggu Verifikasi</span>' : '<span class="tag tag-no">Belum Unggah</span>');
+        return '<div class="doc-row">'+
+          '<div><div class="doc-name">'+dd.name+statusTag+'</div><div class="doc-desc">'+dd.desc+(doc.uploaded?(' · '+esc(doc.filename)):'')+'</div></div>'+
+          (doc.uploaded ? '' : '<button class="btn btn-outline btn-sm" data-action="upload-doc" data-key="'+dd.key+'">Simulasikan Unggah</button>')+
+        '</div>';
+      }).join('')+
+    '</div>';
+
+    var ledgerItems = [
+      {key:"terdaftar", title:"Pendaftaran Diterima Sistem", desc:"Data Anda telah tercatat dengan nomor "+reg.id+"."},
+      {key:"dokumen", title:"Lengkapi &amp; Verifikasi Dokumen", desc: allDocsVerified(reg) ? "Seluruh dokumen telah diverifikasi panitia." : (allDocsUploaded(reg) ? "Dokumen telah diunggah, menunggu verifikasi panitia." : "Silakan unggah seluruh dokumen di atas.")},
+      {key:"wawancara", title:"Jadwal Wawancara &amp; Seleksi", desc: reg.interview.date ? ("Terjadwal "+fmtDate(reg.interview.date)+" pukul "+esc(reg.interview.time)+" WIB di "+esc(reg.interview.location)) : "Menunggu penjadwalan dari panitia setelah dokumen terverifikasi."},
+      {key:"hasil", title:"Hasil Seleksi", desc: reg.seleksi.result ? seleksiText(reg.seleksi.result, reg.student.nama) : "Menunggu hasil wawancara dan seleksi."},
+      {key:"bayar", title:"Pembayaran PPDB / SPMB", desc: reg.seleksi.result==='diterima' ? paymentText(reg) : "Berlaku setelah dinyatakan diterima."},
+      {key:"aktif", title:"Aktivasi sebagai Siswa", desc: reg.activated ? ("Resmi aktif sejak "+fmtDateTime(reg.activatedAt)+".") : ("Akan diaktifkan otomatis pada "+ACTIVATION_MONTH_LABEL+" setelah pembayaran lunas.")}
+    ];
+    var order = ["terdaftar","dokumen","wawancara","hasil","bayar","aktif"];
+    var doneUpto = { lengkapi_dokumen:0, menunggu_verifikasi:0, menunggu_jadwal:1, menunggu_wawancara:1,
+      menunggu_hasil:2, tidak_diterima:3, cadangan:3, menunggu_pembayaran:3, menunggu_konfirmasi_bayar:3,
+      lunas:4, siswa_aktif:5 }[stage];
+    var ledgerHtml = '<div class="ledger">'+ledgerItems.map(function(it,i){
+      var cls = i<=doneUpto ? "done" : (i===doneUpto+1 ? "current" : "");
+      if(stage==='tidak_diterima' && it.key==='hasil') cls = "blocked";
+      return '<div class="ledger-item '+cls+'"><h4>'+it.title+'</h4><div class="desc">'+it.desc+'</div></div>';
+    }).join('')+'</div>';
+
+    var stampHtml = "";
+    if(reg.seleksi.result==='diterima'){
+      stampHtml = '<div class="stamp-wrap"><div class="stamp"><div class="s1">'+esc(SCHOOL_NAME)+'</div><div class="s2">RESMI<br>DITERIMA</div><div class="s3">'+GELOMBANG_LABEL[reg.gelombang]+' · TA 2026/2027</div></div></div>';
+    }
+
+    var paymentSection = "";
+    if(reg.seleksi.result==='diterima'){
+      paymentSection = ''+
+      '<div class="card">'+
+        stampHtml+
+        '<h3 style="text-align:center;">Tagihan PPDB / SPMB</h3>'+
+        '<div style="text-align:center;font-size:1.6rem;" class="price">'+rupiah(reg.payment.amount)+'</div>'+
+        '<p class="hint" style="text-align:center;">Sesuai tahapan gelombang: <strong>'+GELOMBANG_LABEL[reg.gelombang]+'</strong></p>'+
+        (reg.payment.confirmed ?
+          '<div style="text-align:center;"><span class="tag tag-ok">Lunas — Terverifikasi Bendahara</span></div>' :
+          reg.payment.reported ?
+          '<div style="text-align:center;"><span class="tag tag-wait">Menunggu Verifikasi Pembayaran</span></div>' :
+          '<button class="btn btn-gold btn-block" data-action="report-payment">Saya Sudah Transfer / Bayar</button>'
+        )+
+      '</div>';
+    }
+
+    var notifSection = ''+
+    '<div class="card">'+
+      '<h3>Riwayat Notifikasi (Simulasi WA &amp; Email)</h3>'+
+      (reg.notifications.length===0 ? '<div class="empty">Belum ada notifikasi.</div>' :
+        reg.notifications.slice().reverse().map(function(n){
+          return '<div class="notif '+(n.channel==='Email'?'email':'')+'"><div class="notif-top"><span class="notif-channel">'+n.channel+'</span><span class="notif-time mono">'+fmtDateTime(n.ts)+'</span></div><div class="notif-title">'+esc(n.title)+'</div><div class="notif-msg">'+esc(n.message)+'</div></div>';
+        }).join('')
+      )+
+    '</div>';
+
+    var inner = back + header +
+      '<div class="card"><h3>Status Pendaftaran</h3>'+ledgerHtml+'</div>'+
+      docsSection + paymentSection + notifSection;
+    return shell(inner);
+  }
+  function seleksiText(result, nama){
+    if(result==='diterima') return "Selamat! "+nama+" dinyatakan DITERIMA.";
+    if(result==='tidak') return nama+" belum dapat kami terima pada gelombang ini.";
+    if(result==='cadangan') return nama+" masuk daftar CADANGAN — akan dihubungi bila ada kuota tambahan.";
+    return "";
+  }
+  function paymentText(reg){
+    if(reg.payment.confirmed) return "Pembayaran "+rupiah(reg.payment.amount)+" telah lunas dan terverifikasi.";
+    if(reg.payment.reported) return "Konfirmasi pembayaran Anda diterima, menunggu verifikasi bendahara.";
+    return "Tagihan "+rupiah(reg.payment.amount)+" — silakan lakukan pembayaran.";
+  }
+
+  /* ============ RENDER: ADMIN LOGIN ============ */
+  function renderAdminLogin(){
+    var inner = ''+
+    '<a class="back-link" data-action="go-home">&larr; kembali ke beranda</a>'+
+    '<div class="card">'+
+      '<h2>Login Admin Sekolah</h2>'+
+      '<p class="hint" style="margin-bottom:1rem;">Panel ini untuk panitia PPDB: verifikasi dokumen, jadwal wawancara, hasil seleksi, konfirmasi pembayaran, dan aktivasi siswa.</p>'+
+      '<div class="field"><label>Kata Sandi Admin</label><input type="text" id="f-admin-pass" placeholder="Demo: admin123"></div>'+
+      (state.lookupError?'<div class="error-text" style="margin-bottom:.8rem;">'+esc(state.lookupError)+'</div>':'')+
+      '<button class="btn btn-primary btn-block" data-action="do-admin-login">Masuk</button>'+
+    '</div>';
+    return shell(inner, {narrow:true});
+  }
+
+  /* ============ RENDER: ADMIN LIST ============ */
+  function stageBadge(stage){
+    var map = {
+      lengkapi_dokumen:["Lengkapi Dokumen","tag-no"],
+      menunggu_verifikasi:["Menunggu Verifikasi","tag-wait"],
+      menunggu_jadwal:["Menunggu Jadwal","tag-wait"],
+      menunggu_wawancara:["Menunggu Wawancara","tag-wait"],
+      menunggu_hasil:["Menunggu Hasil","tag-wait"],
+      tidak_diterima:["Tidak Diterima","tag-no"],
+      cadangan:["Cadangan","tag-navy"],
+      menunggu_pembayaran:["Menunggu Pembayaran","tag-wait"],
+      menunggu_konfirmasi_bayar:["Konfirmasi Pembayaran","tag-wait"],
+      lunas:["Lunas","tag-ok"],
+      siswa_aktif:["Siswa Aktif","tag-ok"]
+    };
+    var m = map[stage] || [stage,"tag-navy"];
+    return '<span class="tag '+m[1]+'">'+m[0]+'</span>';
+  }
+  var STAGE_TABS = [
+    {key:"all", label:"Semua"},
+    {key:"lengkapi_dokumen", label:"Baru Terdaftar"},
+    {key:"menunggu_verifikasi", label:"Dokumen Lengkap · Verifikasi"},
+    {key:"menunggu_jadwal", label:"Siap Dijadwalkan"},
+    {key:"menunggu_wawancara", label:"Menunggu Wawancara"},
+    {key:"menunggu_hasil", label:"Menunggu Hasil"},
+    {key:"menunggu_pembayaran", label:"Menunggu Pembayaran"},
+    {key:"menunggu_konfirmasi_bayar", label:"Transfer · Belum Dikonfirmasi"},
+    {key:"lunas", label:"Lunas"},
+    {key:"siswa_aktif", label:"Siswa Aktif"},
+    {key:"tidak_diterima", label:"Tidak Diterima"},
+    {key:"cadangan", label:"Cadangan"}
+  ];
+
+  function applyAdminFilters(regs){
+    return regs.filter(function(r){
+      if(state.adminGelombangFilter!=="all" && r.gelombang!==state.adminGelombangFilter) return false;
+      if(state.adminStageFilter!=="all" && computeStage(r)!==state.adminStageFilter) return false;
+      var q = state.adminSearch.trim().toLowerCase();
+      if(q){
+        var hay = [r.student.nama, r.parent.nama, r.parent.alamat, r.student.alamatSiswa||"", r.prevSchool.nama, r.id, r.parent.nik, r.parent.hp].join(" ").toLowerCase();
+        if(hay.indexOf(q)===-1) return false;
+      }
+      return true;
+    });
+  }
+
+  function buildGridRows(filtered){
+    if(filtered.length===0){
+      return '<div class="empty"><h3>Tidak ada data</h3><p>Tidak ada pendaftar yang cocok dengan filter/pencarian saat ini.</p></div>';
+    }
+    return '<table class="admin-table"><thead><tr><th>No. Pendaftaran</th><th>Calon Siswa</th><th>Jenjang</th><th>Alamat</th><th>Gelombang</th><th>Status</th><th></th></tr></thead><tbody>'+
+      filtered.map(function(r){
+        var addr = r.parent.alamat || "";
+        var addrShort = addr.length>32 ? addr.slice(0,32)+"…" : addr;
+        return '<tr data-action="admin-open" data-id="'+r.id+'" style="cursor:pointer;">'+
+          '<td class="mono">'+r.id+'</td>'+
+          '<td>'+esc(r.student.nama)+'</td>'+
+          '<td>'+esc(r.student.jenjangTujuan)+'</td>'+
+          '<td title="'+esc(addr)+'">'+esc(addrShort)+'</td>'+
+          '<td>'+GELOMBANG_LABEL[r.gelombang]+'</td>'+
+          '<td>'+stageBadge(computeStage(r))+'</td>'+
+          '<td><span class="row-link" data-action="admin-open" data-id="'+r.id+'">Kelola &rarr;</span></td>'+
+        '</tr>';
+      }).join('')+
+    '</tbody></table>';
+  }
+
+  function buildAdminListHtml(regs){
+    var byGelombang = state.adminGelombangFilter==="all" ? regs : regs.filter(function(r){return r.gelombang===state.adminGelombangFilter;});
+    var filtered = applyAdminFilters(regs);
+
+    var gelBar = ''+
+    '<div class="btn-row" style="margin-bottom:.8rem;flex-wrap:wrap;">'+
+      '<button class="btn '+(state.adminGelombangFilter==='all'?'btn-primary':'btn-outline')+' btn-sm" data-action="admin-filter" data-key="all">Semua Gelombang ('+regs.length+')</button>'+
+      GELOMBANG_ORDER.map(function(k){
+        var c = regs.filter(function(r){return r.gelombang===k;}).length;
+        return '<button class="btn '+(state.adminGelombangFilter===k?'btn-primary':'btn-outline')+' btn-sm" data-action="admin-filter" data-key="'+k+'">'+GELOMBANG_LABEL[k]+' ('+c+')</button>';
+      }).join('')+
+    '</div>';
+
+    var stageTabBar = '<div class="btn-row" style="margin-bottom:1rem;flex-wrap:wrap;">'+
+      STAGE_TABS.map(function(t){
+        var c = t.key==="all" ? byGelombang.length : byGelombang.filter(function(r){return computeStage(r)===t.key;}).length;
+        return '<button class="btn '+(state.adminStageFilter===t.key?'btn-primary':'btn-outline')+' btn-sm" data-action="admin-stage-filter" data-key="'+t.key+'">'+t.label+' ('+c+')</button>';
+      }).join('')+
+    '</div>';
+
+    var searchBar = ''+
+    '<div class="field" style="max-width:420px;">'+
+      '<label>Cari Pendaftar</label>'+
+      '<input type="text" id="f-admin-search" placeholder="Cari nama, alamat, NIK, sekolah asal, atau no. pendaftaran…" value="'+esc(state.adminSearch)+'">'+
+    '</div>';
+
+    var settingsCard = ''+
+    '<div class="card">'+
+      '<h3>Pengaturan Gelombang</h3>'+
+      '<p class="hint">Pendaftar baru otomatis masuk ke gelombang aktif. Ubah gelombang aktif setiap kali memasuki periode baru (±1 bulan sekali).</p>'+
+      waveBar(state.settings.activeGelombang, {selectable:true})+
+    '</div>';
+
+    var inner = ''+
+    '<a class="back-link" data-action="go-home">&larr; kembali ke beranda</a>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6rem;margin-bottom:1rem;">'+
+      '<h2 style="margin:0;">Panel Admin PPDB</h2>'+
+      '<div class="btn-row">'+
+        '<button class="btn btn-outline btn-sm" data-action="seed-demo-data">+ Buat Data Contoh</button>'+
+        '<button class="btn btn-danger btn-sm" data-action="reset-demo">Hapus Semua Data Demo</button>'+
+      '</div>'+
+    '</div>'+
+    settingsCard+
+    '<div class="card">'+
+      '<h3 style="margin-bottom:.9rem;">Data Pendaftar per Tahapan Proses</h3>'+
+      searchBar+
+      gelBar+
+      stageTabBar+
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem;">'+
+        '<div class="eyebrow" style="color:var(--ink-soft);" id="admin-grid-count">'+filtered.length+' pendaftar</div>'+
+      '</div>'+
+      '<div id="admin-grid-wrap">'+buildGridRows(filtered)+'</div>'+
+    '</div>';
+    return shell(inner);
+  }
+
+  async function renderAdminList(){
+    var regs = await loadAllRegs();
+    state.adminRegsCache = regs;
+    return buildAdminListHtml(regs);
+  }
+
+  /* ============ RENDER: ADMIN DETAIL ============ */
+  function renderAdminDetail(reg){
+    var stage = computeStage(reg);
+    var back = '<a class="back-link" data-action="go-admin-list">&larr; kembali ke daftar pendaftar</a>';
+
+    var infoCard = ''+
+    '<div class="card">'+
+      '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;">'+
+        '<div><div class="eyebrow" style="color:var(--ink-soft);">No. Pendaftaran</div><div class="id-badge">'+reg.id+'</div></div>'+
+        '<div>'+stageBadge(stage)+'</div>'+
+      '</div>'+
+      '<hr class="divider">'+
+      '<div class="grid2">'+
+        '<div><div class="eyebrow" style="color:var(--ink-soft);">Calon Siswa</div><div>'+esc(reg.student.nama)+' ('+(reg.student.jenisKelamin==='L'?'L':'P')+')</div><div class="hint">'+esc(reg.student.tempatLahir)+', '+fmtDate(reg.student.tanggalLahir)+' · Jenjang '+esc(reg.student.jenjangTujuan)+'</div></div>'+
+        '<div><div class="eyebrow" style="color:var(--ink-soft);">Orang Tua / Wali</div><div>'+esc(reg.parent.nama)+' ('+esc(reg.parent.hubungan)+')</div><div class="hint">NIK '+esc(reg.parent.nik)+' · '+esc(reg.parent.hp)+' · '+esc(reg.parent.email)+'</div></div>'+
+      '</div>'+
+      '<div style="margin-top:.8rem;"><div class="eyebrow" style="color:var(--ink-soft);">Sekolah Asal</div><div class="hint">'+esc(reg.prevSchool.nama)+' ('+esc(reg.prevSchool.jenjang)+') — Lulus '+esc(reg.prevSchool.tahunLulus)+'</div></div>'+
+    '</div>';
+
+    var docsCard = ''+
+    '<div class="card">'+
+      '<h3>Verifikasi Dokumen</h3>'+
+      DOC_DEFS.map(function(dd){
+        var doc = reg.documents[dd.key];
+        var statusTag = doc.verified ? '<span class="tag tag-ok">Terverifikasi</span>' : (doc.uploaded ? '<span class="tag tag-wait">Belum Diverifikasi</span>' : '<span class="tag tag-no">Belum Diunggah</span>');
+        return '<div class="doc-row">'+
+          '<div><div class="doc-name">'+dd.name+statusTag+'</div><div class="doc-desc">'+(doc.uploaded?esc(doc.filename):'Menunggu unggahan orang tua')+'</div></div>'+
+          (doc.uploaded && !doc.verified ? '<button class="btn btn-outline btn-sm" data-action="verify-doc" data-key="'+dd.key+'">Tandai Terverifikasi</button>' : '')+
+        '</div>';
+      }).join('')+
+    '</div>';
+
+    var interviewCard = ''+
+    '<div class="card">'+
+      '<h3>Jadwal Wawancara &amp; Seleksi</h3>'+
+      (!allDocsVerified(reg) ? '<p class="hint">Semua dokumen harus terverifikasi sebelum jadwal dapat ditentukan.</p>' :
+        reg.interview.date ?
+        ('<p>Terjadwal: <strong>'+fmtDate(reg.interview.date)+'</strong> pukul <strong>'+esc(reg.interview.time)+'</strong> WIB<br>Lokasi: '+esc(reg.interview.location)+'</p>'+
+          (reg.interview.done ? '<span class="tag tag-ok">Wawancara Selesai</span>' : '<button class="btn btn-outline btn-sm" data-action="mark-interview-done">Tandai Wawancara Selesai</button>')
+        ) :
+        ('<div class="grid3">'+
+          '<div class="field"><label>Tanggal</label><input type="date" id="f-iv-date"></div>'+
+          '<div class="field"><label>Jam</label><input type="time" id="f-iv-time" value="09:00"></div>'+
+          '<div class="field"><label>Lokasi</label><input type="text" id="f-iv-loc" value="Ruang Wawancara, Kampus '+esc(SCHOOL_NAME)+'"></div>'+
+        '</div>'+
+        '<button class="btn btn-primary" data-action="save-interview">Simpan Jadwal &amp; Kirim Notifikasi</button>')
+      )+
+    '</div>';
+
+    var seleksiCard = "";
+    if(reg.interview.done){
+      seleksiCard = ''+
+      '<div class="card">'+
+        '<h3>Hasil Seleksi</h3>'+
+        (reg.seleksi.result ?
+          '<p>Hasil: '+stageBadge(reg.seleksi.result==='diterima'?'lunas':(reg.seleksi.result==='tidak'?'tidak_diterima':'cadangan')).replace('Lunas', seleksiLabel(reg.seleksi.result))+'</p>'
+          :
+          ('<div class="field"><label>Tentukan Hasil</label><select id="f-hasil">'+
+            '<option value="diterima">Diterima</option><option value="tidak">Tidak Diterima</option><option value="cadangan">Cadangan</option>'+
+          '</select></div>'+
+          '<button class="btn btn-primary" data-action="save-hasil">Simpan Hasil &amp; Kirim Notifikasi</button>')
+        )+
+      '</div>';
+    }
+
+    var paymentCard = "";
+    if(reg.seleksi.result==='diterima'){
+      paymentCard = ''+
+      '<div class="card">'+
+        '<h3>Pembayaran PPDB / SPMB</h3>'+
+        '<p>Tagihan: <span class="price">'+rupiah(reg.payment.amount)+'</span> ('+GELOMBANG_LABEL[reg.gelombang]+')</p>'+
+        (reg.payment.confirmed ? '<span class="tag tag-ok">Lunas — Dikonfirmasi '+fmtDateTime(reg.payment.confirmedAt)+'</span>' :
+          reg.payment.reported ? ('<p class="hint">Orang tua melaporkan pembayaran pada '+fmtDateTime(reg.payment.reportedAt)+'.</p><button class="btn btn-primary" data-action="confirm-payment">Konfirmasi Pembayaran Diterima</button>') :
+          '<p class="hint">Menunggu laporan pembayaran dari orang tua.</p>'
+        )+
+      '</div>';
+    }
+
+    var activateCard = "";
+    if(reg.payment.confirmed){
+      activateCard = ''+
+      '<div class="card">'+
+        '<h3>Aktivasi Siswa</h3>'+
+        (reg.activated ? '<span class="tag tag-ok">Aktif sejak '+fmtDateTime(reg.activatedAt)+'</span>' :
+          ('<p class="hint">Aktivasi resmi dilakukan pada '+ACTIVATION_MONTH_LABEL+' menjelang tahun ajaran baru.</p><button class="btn btn-gold" data-action="activate-student">Aktifkan sebagai Siswa ('+ACTIVATION_MONTH_LABEL+')</button>')
+        )+
+      '</div>';
+    }
+
+    var notifCard = ''+
+    '<div class="card">'+
+      '<h3>Riwayat Notifikasi Terkirim</h3>'+
+      (reg.notifications.length===0 ? '<div class="empty">Belum ada notifikasi.</div>' :
+        reg.notifications.slice().reverse().map(function(n){
+          return '<div class="notif '+(n.channel==='Email'?'email':'')+'"><div class="notif-top"><span class="notif-channel">'+n.channel+'</span><span class="notif-time mono">'+fmtDateTime(n.ts)+'</span></div><div class="notif-title">'+esc(n.title)+'</div><div class="notif-msg">'+esc(n.message)+'</div></div>';
+        }).join('')
+      )+
+    '</div>';
+
+    var inner = back + infoCard + docsCard + interviewCard + seleksiCard + paymentCard + activateCard + notifCard;
+    return shell(inner);
+  }
+  function seleksiLabel(r){ return r==='diterima'?'Diterima':(r==='tidak'?'Tidak Diterima':'Cadangan'); }
+
+  /* ============ MAIN RENDER DISPATCH ============ */
+  var app = document.getElementById("app");
+  async function render(){
+    if(!state.settings) state.settings = await ensureSettings();
+    var html = "";
+    if(state.view==="home") html = renderHome();
+    else if(state.view==="register") html = renderRegister();
+    else if(state.view==="success") html = renderSuccess(state._successReg);
+    else if(state.view==="check") html = renderCheck();
+    else if(state.view==="dashboard"){
+      var reg = await loadReg(state.currentRegId);
+      html = reg ? renderDashboard(reg) : renderCheck();
+    }
+    else if(state.view==="admin-login") html = renderAdminLogin();
+    else if(state.view==="admin-list") html = await renderAdminList();
+    else if(state.view==="admin-detail"){
+      var areg = await loadReg(state.adminRegId);
+      html = areg ? renderAdminDetail(areg) : await renderAdminList();
+    }
+    app.innerHTML = html;
+    window.scrollTo(0,0);
+  }
+
+  /* ============ EVENT HANDLING ============ */
+  document.addEventListener("click", async function(e){
+    var el = e.target.closest("[data-action]");
+    if(!el) return;
+    var action = el.getAttribute("data-action");
+
+    if(action==="go-home"){ state.view="home"; render(); }
+    else if(action==="go-register"){
+      state.view="register"; state.step=1; state.formErrors={};
+      var gel = state.settings.activeGelombang;
+      state.regDraft = newRegistration(gel, state.settings.pricing[gel]);
+      render();
+    }
+    else if(action==="go-check"){ state.view="check"; state.lookupError=""; render(); }
+    else if(action==="go-admin-login"){ state.view="admin-login"; state.lookupError=""; render(); }
+    else if(action==="go-admin-list"){ state.view="admin-list"; render(); }
+    else if(action==="step-next"){
+      captureStepInputs();
+      if(!validateStep()){ render(); return; }
+      if(state.step<4){ state.step++; render(); }
+    }
+    else if(action==="step-back"){
+      captureStepInputs();
+      state.formErrors={};
+      if(state.step>1){ state.step--; render(); }
+    }
+    else if(action==="submit-register"){
+      var reg = state.regDraft;
+      addNotif(reg, "Pendaftaran Diterima", "Halo "+reg.parent.nama+", pendaftaran "+reg.student.nama+" dengan nomor "+reg.id+" pada gelombang "+GELOMBANG_LABEL[reg.gelombang]+" telah kami terima. Silakan lengkapi dokumen di dashboard Anda.");
+      await saveReg(reg);
+      await addMyReg(reg.id, reg.student.nama);
+      state._successReg = reg;
+      state.view = "success";
+      render();
+    }
+    else if(action==="open-dashboard"){
+      state.currentRegId = el.getAttribute("data-id");
+      state.view="dashboard"; render();
+    }
+    else if(action==="do-lookup"){
+      var id = qs("#f-lookup-id").value.trim();
+      var nik = qs("#f-lookup-nik").value.trim();
+      var reg = await loadReg(id);
+      if(!reg || reg.parent.nik !== nik){
+        state.lookupError = "Nomor pendaftaran atau NIK tidak cocok. Periksa kembali data Anda.";
+        render();
+      } else {
+        state.lookupError = "";
+        state.currentRegId = id;
+        state.view = "dashboard";
+        render();
+      }
+    }
+    else if(action==="upload-doc"){
+      var reg = await loadReg(state.currentRegId);
+      var key = el.getAttribute("data-key");
+      var dd = DOC_DEFS.filter(function(d){return d.key===key;})[0];
+      reg.documents[key].uploaded = true;
+      reg.documents[key].filename = key.toUpperCase()+"_"+reg.student.nama.replace(/\s+/g,"_")+".pdf";
+      var wasNotAllUploaded = true;
+      await saveReg(reg);
+      if(allDocsUploaded(reg)){
+        addNotif(reg, "Semua Dokumen Terunggah", "Seluruh dokumen "+reg.student.nama+" telah diunggah dan akan segera diverifikasi panitia PPDB.");
+        await saveReg(reg);
+      }
+      render();
+    }
+    else if(action==="report-payment"){
+      var reg = await loadReg(state.currentRegId);
+      reg.payment.reported = true; reg.payment.reportedAt = nowISO();
+      addNotif(reg, "Konfirmasi Pembayaran Diterima", "Kami telah menerima konfirmasi pembayaran sebesar "+rupiah(reg.payment.amount)+" dari Anda. Bendahara akan memverifikasi dalam 1x24 jam.");
+      await saveReg(reg);
+      showToast("Konfirmasi pembayaran dikirim ke panitia");
+      render();
+    }
+    else if(action==="admin-filter"){
+      state.adminGelombangFilter = el.getAttribute("data-key"); render();
+    }
+    else if(action==="admin-stage-filter"){
+      state.adminStageFilter = el.getAttribute("data-key"); render();
+    }
+    else if(action==="seed-demo-data"){
+      el.setAttribute("disabled","disabled");
+      var n = await generateSeedData();
+      showToast(n+" data contoh berhasil dibuat");
+      render();
+    }
+    else if(action==="admin-open"){
+      state.adminRegId = el.getAttribute("data-id");
+      state.view="admin-detail"; render();
+    }
+    else if(action==="set-active-gelombang"){
+      var key = el.getAttribute("data-key");
+      state.settings.activeGelombang = key;
+      await sSet("ppdb:settings", state.settings, true);
+      showToast("Gelombang aktif diubah ke "+GELOMBANG_LABEL[key]);
+      render();
+    }
+    else if(action==="do-admin-login"){
+      var pass = qs("#f-admin-pass").value;
+      if(pass===ADMIN_PASSWORD){
+        state.adminAuthed = true; state.lookupError="";
+        state.view="admin-list"; render();
+      } else {
+        state.lookupError = "Kata sandi salah. (Demo: admin123)";
+        render();
+      }
+    }
+    else if(action==="verify-doc"){
+      var reg = await loadReg(state.adminRegId);
+      var key = el.getAttribute("data-key");
+      reg.documents[key].verified = true;
+      var nowAllVerified = allDocsVerified(reg);
+      await saveReg(reg);
+      if(nowAllVerified){
+        addNotif(reg, "Dokumen Terverifikasi", "Seluruh dokumen "+reg.student.nama+" telah diverifikasi. Panitia akan segera menjadwalkan wawancara.");
+        await saveReg(reg);
+      }
+      render();
+    }
+    else if(action==="save-interview"){
+      var reg = await loadReg(state.adminRegId);
+      var date = qs("#f-iv-date").value, time = qs("#f-iv-time").value, loc = qs("#f-iv-loc").value;
+      if(!date){ showToast("Tanggal wawancara wajib diisi"); return; }
+      reg.interview.date = date; reg.interview.time = time; reg.interview.location = loc;
+      addNotif(reg, "Jadwal Wawancara & Seleksi", "Wawancara "+reg.student.nama+" dijadwalkan pada "+fmtDate(date)+" pukul "+time+" WIB di "+loc+". Mohon hadir 15 menit lebih awal.");
+      await saveReg(reg);
+      render();
+    }
+    else if(action==="mark-interview-done"){
+      var reg = await loadReg(state.adminRegId);
+      reg.interview.done = true;
+      await saveReg(reg);
+      render();
+    }
+    else if(action==="save-hasil"){
+      var reg = await loadReg(state.adminRegId);
+      var val = qs("#f-hasil").value;
+      reg.seleksi.result = val; reg.seleksi.decidedAt = nowISO();
+      var msg = val==='diterima'
+        ? ("Selamat! "+reg.student.nama+" dinyatakan DITERIMA di "+SCHOOL_NAME+". Silakan lakukan pembayaran PPDB sebesar "+rupiah(reg.payment.amount)+" melalui dashboard Anda.")
+        : val==='tidak'
+        ? (reg.student.nama+" belum dapat kami terima pada gelombang "+GELOMBANG_LABEL[reg.gelombang]+" ini. Terima kasih atas partisipasinya.")
+        : (reg.student.nama+" masuk daftar CADANGAN. Kami akan menghubungi Anda apabila tersedia kuota tambahan.");
+      addNotif(reg, "Hasil Seleksi PPDB", msg);
+      await saveReg(reg);
+      render();
+    }
+    else if(action==="confirm-payment"){
+      var reg = await loadReg(state.adminRegId);
+      reg.payment.confirmed = true; reg.payment.confirmedAt = nowISO();
+      addNotif(reg, "Pembayaran Lunas", "Pembayaran PPDB sebesar "+rupiah(reg.payment.amount)+" untuk "+reg.student.nama+" telah kami terima dan verifikasi. Selamat bergabung di "+SCHOOL_NAME+"!");
+      await saveReg(reg);
+      render();
+    }
+    else if(action==="activate-student"){
+      var reg = await loadReg(state.adminRegId);
+      reg.activated = true; reg.activatedAt = nowISO();
+      addNotif(reg, "Siswa Resmi Aktif", reg.student.nama+" resmi aktif sebagai siswa "+SCHOOL_NAME+" mulai "+ACTIVATION_MONTH_LABEL+". Selamat datang!");
+      await saveReg(reg);
+      render();
+    }
+    else if(action==="reset-demo"){
+      if(!confirm("Hapus SEMUA data pendaftar demo? Tindakan ini tidak dapat dibatalkan.")) return;
+      var keys = await sList("ppdb:reg:", true);
+      for(var i=0;i<keys.length;i++){ await sDelete(keys[i], true); }
+      showToast("Semua data demo telah dihapus");
+      render();
+    }
+  });
+
+  /* live sync of checkbox for "alamat sama" without full re-render loss (change handler) */
+  document.addEventListener("change", function(e){
+    if(e.target && e.target.id==="f-s-samaalamat"){
+      captureStepInputs();
+      render();
+    }
+  });
+
+  /* live search in admin datagrid: update only the grid + count, so the input never loses focus */
+  document.addEventListener("input", function(e){
+    if(e.target && e.target.id==="f-admin-search"){
+      state.adminSearch = e.target.value;
+      var wrap = document.getElementById("admin-grid-wrap");
+      var countEl = document.getElementById("admin-grid-count");
+      if(wrap){
+        var filtered = applyAdminFilters(state.adminRegsCache||[]);
+        wrap.innerHTML = buildGridRows(filtered);
+        if(countEl) countEl.textContent = filtered.length+" pendaftar";
+      }
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
