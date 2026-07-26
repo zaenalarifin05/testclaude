@@ -11,6 +11,8 @@ use App\Models\Wawancara;
 
 class AdminController
 {
+    private const PER_HALAMAN = 10;
+
     public function index(): void
     {
         Auth::requireLogin();
@@ -35,8 +37,15 @@ class AdminController
             });
         }
 
+        $daftar = array_values($daftar);
+        $totalData = count($daftar);
+        $totalHalaman = max(1, (int) ceil($totalData / self::PER_HALAMAN));
+        $halaman = max(1, min($totalHalaman, (int) ($_GET['page'] ?? 1)));
+        $daftarHalaman = array_slice($daftar, ($halaman - 1) * self::PER_HALAMAN, self::PER_HALAMAN);
+
         $gelombangList = Gelombang::semua();
         $title = 'Panel Admin PPDB';
+        $daftar = $daftarHalaman;
 
         require __DIR__ . '/../Views/layout/header.php';
         require __DIR__ . '/../Views/admin/index.php';
