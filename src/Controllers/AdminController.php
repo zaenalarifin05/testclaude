@@ -12,6 +12,7 @@ use App\Models\Wawancara;
 class AdminController
 {
     private const PER_HALAMAN = 10;
+    private const KOLOM_URUT = ['nomor_pendaftaran', 'nama_siswa', 'jenjang_tujuan', 'gelombang_label', 'tahap'];
 
     public function index(): void
     {
@@ -37,6 +38,16 @@ class AdminController
             });
         }
 
+        $sortKolom = $_GET['sort'] ?? null;
+        $sortArah = ($_GET['dir'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
+
+        if ($sortKolom !== null && in_array($sortKolom, self::KOLOM_URUT, true)) {
+            usort($daftar, static function (array $a, array $b) use ($sortKolom, $sortArah): int {
+                $cmp = strnatcasecmp((string) $a[$sortKolom], (string) $b[$sortKolom]);
+                return $sortArah === 'desc' ? -$cmp : $cmp;
+            });
+        }
+
         $daftar = array_values($daftar);
         $totalData = count($daftar);
         $totalHalaman = max(1, (int) ceil($totalData / self::PER_HALAMAN));
@@ -46,6 +57,8 @@ class AdminController
         $gelombangList = Gelombang::semua();
         $title = 'Panel Admin PPDB';
         $daftar = $daftarHalaman;
+        $sortAktif = $sortKolom;
+        $arahAktif = $sortArah;
 
         require __DIR__ . '/../Views/layout/header.php';
         require __DIR__ . '/../Views/admin/index.php';

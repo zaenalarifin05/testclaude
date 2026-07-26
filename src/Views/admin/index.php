@@ -4,6 +4,8 @@
 /** @var int $totalData */
 /** @var int $totalHalaman */
 /** @var int $halaman */
+/** @var string|null $sortAktif */
+/** @var string $arahAktif */
 
 $gelombangFilter = $_GET['gelombang'] ?? 'all';
 $tahapFilter = $_GET['tahap'] ?? 'all';
@@ -13,9 +15,26 @@ $queryDasar = array_filter([
     'gelombang' => $gelombangFilter !== 'all' ? $gelombangFilter : null,
     'tahap' => $tahapFilter !== 'all' ? $tahapFilter : null,
     'cari' => $cari !== '' ? $cari : null,
+    'sort' => $sortAktif,
+    'dir' => $sortAktif !== null ? $arahAktif : null,
 ], static fn ($v) => $v !== null);
 
 $tautanHalaman = static fn (int $p): string => '/admin?' . http_build_query($queryDasar + ['page' => $p]);
+
+$tautanUrut = static function (string $kolom) use ($queryDasar, $sortAktif, $arahAktif): string {
+    $arahBaru = ($sortAktif === $kolom && $arahAktif === 'asc') ? 'desc' : 'asc';
+    $query = array_diff_key($queryDasar, ['sort' => null, 'dir' => null]) + ['sort' => $kolom, 'dir' => $arahBaru];
+
+    return '/admin?' . http_build_query($query);
+};
+
+$ikonUrut = static function (string $kolom) use ($sortAktif, $arahAktif): string {
+    if ($sortAktif !== $kolom) {
+        return '';
+    }
+
+    return $arahAktif === 'asc' ? ' &uarr;' : ' &darr;';
+};
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -66,11 +85,11 @@ $tautanHalaman = static fn (int $p): string => '/admin?' . http_build_query($que
             <table class="table table-striped table-hover align-middle mb-0">
                 <thead class="table-dark">
                     <tr>
-                        <th>No. Pendaftaran</th>
-                        <th>Calon Siswa</th>
-                        <th>Jenjang</th>
-                        <th>Gelombang</th>
-                        <th>Status</th>
+                        <th><a href="<?= e($tautanUrut('nomor_pendaftaran')) ?>" class="text-white text-decoration-none">No. Pendaftaran<?= $ikonUrut('nomor_pendaftaran') ?></a></th>
+                        <th><a href="<?= e($tautanUrut('nama_siswa')) ?>" class="text-white text-decoration-none">Calon Siswa<?= $ikonUrut('nama_siswa') ?></a></th>
+                        <th><a href="<?= e($tautanUrut('jenjang_tujuan')) ?>" class="text-white text-decoration-none">Jenjang<?= $ikonUrut('jenjang_tujuan') ?></a></th>
+                        <th><a href="<?= e($tautanUrut('gelombang_label')) ?>" class="text-white text-decoration-none">Gelombang<?= $ikonUrut('gelombang_label') ?></a></th>
+                        <th><a href="<?= e($tautanUrut('tahap')) ?>" class="text-white text-decoration-none">Status<?= $ikonUrut('tahap') ?></a></th>
                         <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
