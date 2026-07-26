@@ -25,7 +25,7 @@ class Pendaftar extends Model
         $db->beginTransaction();
 
         try {
-            $placeholder = 'TEMP-' . bin2hex(random_bytes(8));
+            $placeholder = 'TEMP-' . bin2hex(random_bytes(6)); // muat di nomor_pendaftaran VARCHAR(20)
 
             $stmt = $db->prepare(
                 'INSERT INTO pendaftar (nomor_pendaftaran, gelombang_id) VALUES (:nomor, :gelombang_id)'
