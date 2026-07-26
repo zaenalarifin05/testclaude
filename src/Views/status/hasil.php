@@ -4,6 +4,7 @@
 /** @var string $nomor */
 /** @var string $nik */
 /** @var array{tipe: string, teks: string}|null $pesanUpload */
+/** @var list<array> $notifikasi */
 
 $pesanUpload ??= null;
 ?>
@@ -79,6 +80,24 @@ $pesanUpload ??= null;
             Tagihan: Rp<?= number_format((float) $detail['pembayaran']['jumlah_tagihan'], 0, ',', '.') ?>
             — Status: <?= e(pembayaran_label($detail['pembayaran']['status'])) ?>
         </p>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if (!empty($notifikasi)): ?>
+<div class="card mb-4">
+    <div class="card-body">
+        <h3 class="h6 card-title mb-3">Riwayat Notifikasi</h3>
+        <p class="text-muted small">Notifikasi berikut juga "dikirim" ke email <?= e($detail['orang_tua']['email']) ?>.</p>
+        <?php foreach ($notifikasi as $n): ?>
+            <div class="border-start border-3 border-primary ps-3 mb-3">
+                <div class="d-flex justify-content-between align-items-baseline flex-wrap gap-2">
+                    <strong class="small"><?= e($n['judul']) ?></strong>
+                    <span class="text-muted small"><?= e($n['dikirim_at']) ?></span>
+                </div>
+                <p class="mb-0 small text-muted"><?= e($n['pesan']) ?></p>
+            </div>
+        <?php endforeach; ?>
     </div>
 </div>
 <?php endif; ?>

@@ -240,8 +240,10 @@ class Pendaftar extends Model
     /**
      * Tetapkan hasil seleksi. Kalau diterima, otomatis buat tagihan pembayaran
      * sebesar biaya_ppdb gelombang yang bersangkutan (kalau belum ada).
+     *
+     * @return float|null Jumlah tagihan kalau hasilnya "diterima", selain itu null.
      */
-    public static function tetapkanHasil(int $pendaftarId, string $hasil, int $adminId): void
+    public static function tetapkanHasil(int $pendaftarId, string $hasil, int $adminId): ?float
     {
         $db = self::db();
         $db->beginTransaction();
@@ -253,6 +255,8 @@ class Pendaftar extends Model
                  ON DUPLICATE KEY UPDATE hasil = VALUES(hasil), ditetapkan_oleh = VALUES(ditetapkan_oleh), ditetapkan_at = NOW()'
             );
             $stmt->execute(['pendaftar_id' => $pendaftarId, 'hasil' => $hasil, 'admin_id' => $adminId]);
+
+            $jumlahTagihan = null;
 
             if ($hasil === 'diterima') {
                 $biaya = $db->prepare(
@@ -271,6 +275,8 @@ class Pendaftar extends Model
             }
 
             $db->commit();
+
+            return $jumlahTagihan;
         } catch (Throwable $e) {
             $db->rollBack();
             throw $e;

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Auth;
 use App\Models\Dokumen;
 use App\Models\Gelombang;
+use App\Models\Notifikasi;
 use App\Models\Pendaftar;
 use App\Models\Wawancara;
 
@@ -55,6 +56,7 @@ class AdminController
         }
 
         $tahap = Pendaftar::hitungTahap($detail);
+        $notifikasi = Notifikasi::untukPendaftar((int) $id);
         $title = 'Kelola Pendaftar — ' . $detail['pendaftar']['nomor_pendaftaran'];
 
         require __DIR__ . '/../Views/layout/header.php';
@@ -71,6 +73,20 @@ class AdminController
 
         if (in_array($status, ['terverifikasi', 'ditolak'], true)) {
             Dokumen::verifikasi((int) $id, $jenis, $status, $catatan !== '' ? $catatan : null);
+
+            $detail = Pendaftar::detail((int) $id);
+
+            if ($detail !== null) {
+                $label = dokumen_label($jenis);
+                $nama = $detail['calon_siswa']['nama'];
+
+                $pesan = $status === 'terverifikasi'
+                    ? 'Dokumen ' . $label . ' milik ' . $nama . ' telah diverifikasi.'
+                    : 'Dokumen ' . $label . ' milik ' . $nama . ' ditolak.'
+                        . ($catatan !== '' ? ' Catatan: ' . $catatan . '.' : '') . ' Silakan unggah ulang.';
+
+                Notifikasi::catat((int) $id, 'Verifikasi Dokumen — ' . $label, $pesan);
+            }
         }
 
         header('Location: /admin/pendaftar/' . $id);
@@ -97,6 +113,13 @@ class AdminController
 
         if ($sudahBolehDijadwalkan && $tanggal !== '' && $jam !== '' && $lokasi !== '') {
             Wawancara::jadwalkan((int) $id, $tanggal, $jam, $lokasi);
+
+            Notifikasi::catat(
+                (int) $id,
+                'Jadwal Wawancara & Seleksi',
+                'Wawancara ' . $detail['calon_siswa']['nama'] . ' dijadwalkan pada ' . $tanggal
+                    . ' pukul ' . $jam . ' di ' . $lokasi . '.'
+            );
         }
 
         header('Location: /admin/pendaftar/' . $id);
@@ -110,7 +133,22 @@ class AdminController
         $hasil = $_POST['hasil'] ?? '';
 
         if (in_array($hasil, ['diterima', 'tidak_diterima', 'cadangan'], true)) {
-            Pendaftar::tetapkanHasil((int) $id, $hasil, (int) Auth::id());
+            $jumlahTagihan = Pendaftar::tetapkanHasil((int) $id, $hasil, (int) Auth::id());
+
+            $detail = Pendaftar::detail((int) $id);
+
+            if ($detail !== null) {
+                $nama = $detail['calon_siswa']['nama'];
+
+                $pesan = match ($hasil) {
+                    'diterima' => 'Selamat! ' . $nama . ' dinyatakan DITERIMA. Silakan lakukan pembayaran PPDB'
+                        . ' sebesar Rp' . number_format($jumlahTagihan ?? 0, 0, ',', '.') . '.',
+                    'tidak_diterima' => 'Mohon maaf, ' . $nama . ' dinyatakan tidak diterima pada seleksi PPDB kali ini.',
+                    default => $nama . ' dinyatakan sebagai peserta cadangan PPDB.',
+                };
+
+                Notifikasi::catat((int) $id, 'Hasil Seleksi PPDB', $pesan);
+            }
         }
 
         header('Location: /admin/pendaftar/' . $id);
@@ -121,7 +159,20 @@ class AdminController
     {
         Auth::requireLogin();
 
+        $detail = Pendaftar::detail((int) $id);
+
         Pendaftar::konfirmasiLunas((int) $id, (int) Auth::id());
+
+        if ($detail !== null && $detail['pembayaran'] !== null) {
+            $jumlah = number_format((float) $detail['pembayaran']['jumlah_tagihan'], 0, ',', '.');
+
+            Notifikasi::catat(
+                (int) $id,
+                'Konfirmasi Pembayaran Diterima',
+                'Pembayaran PPDB sebesar Rp' . $jumlah . ' untuk ' . $detail['calon_siswa']['nama']
+                    . ' telah kami konfirmasi. Terima kasih.'
+            );
+        }
 
         header('Location: /admin/pendaftar/' . $id);
         exit;

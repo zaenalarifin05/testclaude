@@ -1,6 +1,7 @@
 <?php
 /** @var array $detail */
 /** @var string $tahap */
+/** @var list<array> $notifikasi */
 
 $id = $detail['pendaftar']['id'];
 $semuaTerverifikasi = true;
@@ -136,3 +137,33 @@ $bolehJadwalkanWawancara = $detail['wawancara'] !== null || $semuaTerverifikasi;
         <?php endif; ?>
     </div>
 </div>
+
+<?php if (!empty($notifikasi)): ?>
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="h6 card-title mb-3">Riwayat Notifikasi ke Orang Tua</h2>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Channel</th>
+                        <th>Judul</th>
+                        <th>Pesan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($notifikasi as $n): ?>
+                        <tr>
+                            <td class="text-muted small text-nowrap"><?= e($n['dikirim_at']) ?></td>
+                            <td><span class="badge bg-secondary text-uppercase"><?= e($n['channel']) ?></span></td>
+                            <td class="small"><?= e($n['judul']) ?></td>
+                            <td class="small text-muted"><?= e($n['pesan']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Dokumen;
+use App\Models\Notifikasi;
 use App\Models\Pendaftar;
 
 class StatusController
@@ -140,6 +141,7 @@ class StatusController
         }
 
         $tahap = Pendaftar::hitungTahap($detail);
+        $notifikasi = Notifikasi::untukPendaftar((int) $detail['pendaftar']['id']);
         $title = 'Status Pendaftaran';
 
         require __DIR__ . '/../Views/layout/header.php';

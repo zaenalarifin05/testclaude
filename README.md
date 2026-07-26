@@ -10,6 +10,8 @@ Aplikasi web Penerimaan Peserta Didik Baru (PPDB) — PHP native (OOP, tanpa fra
 - Upload dokumen persyaratan (Kartu Keluarga, Akta Kelahiran, Ijazah/SKL, Pas Foto)
 - Panel admin: verifikasi dokumen, jadwalkan wawancara, tetapkan hasil seleksi, konfirmasi pembayaran
 - Kelola akun admin (tambah/edit/hapus, role `panitia`/`superadmin`) — khusus superadmin
+- Riwayat notifikasi otomatis ke orang tua tiap status berubah (dokumen diverifikasi/ditolak,
+  jadwal wawancara, hasil seleksi, konfirmasi pembayaran) — tampil di halaman cek status & panel admin
 
 ## Kebutuhan
 
@@ -111,11 +113,23 @@ docs/         data-model.md (rancangan data), schema.sql (skema + seed),
 | POST | `/admin/pendaftar/{id}/hasil` | Tetapkan hasil seleksi |
 | POST | `/admin/pendaftar/{id}/pembayaran/lunas` | Konfirmasi pembayaran lunas |
 
+## Notifikasi ke Orang Tua
+
+Setiap kali status pendaftaran berubah (dokumen diverifikasi/ditolak, wawancara dijadwalkan,
+hasil seleksi ditetapkan, pembayaran dikonfirmasi lunas), aplikasi otomatis mencatat notifikasi
+ke tabel `notifikasi` (lihat `App\Models\Notifikasi`) dan menampilkannya sebagai riwayat di
+halaman cek status (untuk orang tua) dan detail pendaftar (untuk admin).
+
+**Catatan:** saat ini baru sebatas mencatat riwayat (`channel = 'email'`) — belum benar-benar
+mengirim email. Untuk pengiriman sungguhan, tambahkan pemanggilan mailer (SMTP client atau
+`mail()` native PHP) di titik yang sama tempat `Notifikasi::catat()` dipanggil (lihat
+`AdminController` dan `PendaftaranController`).
+
 ## Keterbatasan Saat Ini
 
 - Satu sekolah per deployment (bukan platform multi-sekolah).
-- Belum ada notifikasi email/WhatsApp otomatis ke orang tua saat status berubah — tombol WA di
-  beranda hanya membuka chat manual, bukan integrasi otomatis.
+- Notifikasi (lihat bagian di atas) baru berupa pencatatan riwayat, belum benar-benar mengirim
+  email/WhatsApp — tombol WA di beranda juga masih membuka chat manual, bukan integrasi otomatis.
 - Foto hero di beranda masih placeholder generik, bukan foto sekolah sungguhan (lihat catatan
   di atas).
 

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Gelombang;
+use App\Models\Notifikasi;
 use App\Models\Pendaftar;
 
 class PendaftaranController
@@ -36,6 +37,13 @@ class PendaftaranController
 
         $data['gelombang_id'] = $gelombang['id'];
         $hasil = Pendaftar::buat($data);
+
+        Notifikasi::catat(
+            $hasil['id'],
+            'Pendaftaran Diterima',
+            'Pendaftaran ' . $data['calon_siswa']['nama'] . ' dengan nomor ' . $hasil['nomor_pendaftaran']
+                . ' pada gelombang ' . $gelombang['label'] . ' telah kami terima. Silakan lengkapi dokumen persyaratan.'
+        );
 
         header('Location: /pendaftaran/berhasil?nomor=' . urlencode($hasil['nomor_pendaftaran']));
         exit;
