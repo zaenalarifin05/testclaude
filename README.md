@@ -46,10 +46,12 @@ C:\xampp\htdocs\ppdb-app
 | Cek status pendaftaran | http://localhost/ppdb-app/public/status |
 | Panel admin | http://localhost/ppdb-app/public/admin |
 
-Beranda memakai foto placeholder (gradien navy) di bagian hero. Untuk pakai foto sekolah
-sungguhan, taruh file di `public/assets/img/hero-sekolah.jpg` — otomatis terpakai tanpa
-ubah kode. Nomor WhatsApp di blok kontak diatur langsung di `src/Views/home/index.php`
-(variabel `$nomorWa`).
+Beranda sudah memakai `public/assets/img/hero-sekolah.jpg` di bagian hero — saat ini masih
+foto placeholder generik (lihat `public/assets/img/CREDITS.md` untuk sumber & lisensinya).
+**Ganti dengan foto sekolah sungguhan sebelum dipakai produksi** — tinggal timpa file yang
+sama, otomatis terpakai tanpa ubah kode (kalau file dihapus, otomatis kembali ke gradien
+navy sebagai fallback). Nomor WhatsApp di blok kontak diatur langsung di
+`src/Views/home/index.php` (variabel `$nomorWa`).
 
 ### Login admin (demo)
 
@@ -114,7 +116,8 @@ docs/         data-model.md (rancangan data), schema.sql (skema + seed),
 - Satu sekolah per deployment (bukan platform multi-sekolah).
 - Belum ada notifikasi email/WhatsApp otomatis ke orang tua saat status berubah — tombol WA di
   beranda hanya membuka chat manual, bukan integrasi otomatis.
-- Foto hero di beranda masih placeholder sampai `public/assets/img/hero-sekolah.jpg` diisi.
+- Foto hero di beranda masih placeholder generik, bukan foto sekolah sungguhan (lihat catatan
+  di atas).
 
 ## Menjalankan dengan PHP Built-in Server (opsional, untuk pengembangan cepat)
 
